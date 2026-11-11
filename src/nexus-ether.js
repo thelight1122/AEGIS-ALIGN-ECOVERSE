@@ -1,5 +1,4 @@
 import {
-  AdditiveBlending,
   CanvasTexture,
   Clock,
   DoubleSide,
@@ -34,7 +33,8 @@ if (!canvas) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
 
   const scene = new Scene();
-  scene.fog = new FogExp2(0x020711, 0.028);
+  // Distant objects fade toward the Aether's own blue rather than toward black.
+  scene.fog = new FogExp2(0x1b2253, 0.02);
 
   const camera = new PerspectiveCamera(58, 1, 0.1, 80);
   camera.position.set(0, 0.2, 5.5);
@@ -97,30 +97,54 @@ if (!canvas) {
     document.body.appendChild(signHint);
   }
 
-  function makeRoadSignTexture(label, subtitle, palette) {
+  // A destination signpost: an arrow-shaped board whose point shows the way.
+  function makeRoadSignTexture(label, subtitle, palette, pointsRight) {
     const canvasTexture = document.createElement("canvas");
     canvasTexture.width = 1024;
     canvasTexture.height = 360;
     const ctx = canvasTexture.getContext("2d");
-    ctx.fillStyle = "rgba(8, 16, 30, 0.84)";
-    ctx.fillRect(0, 0, canvasTexture.width, canvasTexture.height);
-    const gradient = ctx.createLinearGradient(0, 0, canvasTexture.width, canvasTexture.height);
+    const w = canvasTexture.width;
+    const h = canvasTexture.height;
+    const tip = 150;
+    const pad = 16;
+
+    ctx.beginPath();
+    if (pointsRight) {
+      ctx.moveTo(pad, pad);
+      ctx.lineTo(w - tip, pad);
+      ctx.lineTo(w - pad, h / 2);
+      ctx.lineTo(w - tip, h - pad);
+      ctx.lineTo(pad, h - pad);
+    } else {
+      ctx.moveTo(w - pad, pad);
+      ctx.lineTo(tip, pad);
+      ctx.lineTo(pad, h / 2);
+      ctx.lineTo(tip, h - pad);
+      ctx.lineTo(w - pad, h - pad);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(6, 13, 28, 0.94)";
+    ctx.fill();
+    const gradient = ctx.createLinearGradient(0, 0, w, h);
     gradient.addColorStop(0, palette.gradA);
     gradient.addColorStop(1, palette.gradB);
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvasTexture.width, canvasTexture.height);
+    ctx.fill();
     ctx.strokeStyle = palette.stroke;
-    ctx.lineWidth = 5;
-    ctx.strokeRect(18, 18, canvasTexture.width - 36, canvasTexture.height - 36);
-    ctx.fillStyle = "rgba(201, 235, 255, 0.96)";
-    ctx.font = "600 64px 'Segoe UI', sans-serif";
-    ctx.fillText(label, 48, 144);
-    ctx.fillStyle = "rgba(179, 221, 247, 0.96)";
+    ctx.lineWidth = 6;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    const textX = pointsRight ? 54 : tip + 34;
+    ctx.fillStyle = "rgba(236, 247, 255, 0.98)";
+    ctx.font = "700 66px 'Segoe UI', sans-serif";
+    ctx.fillText(label, textX, 142);
+    ctx.fillStyle = "rgba(196, 226, 247, 0.96)";
     ctx.font = "500 34px 'Segoe UI', sans-serif";
-    ctx.fillText(subtitle, 48, 212);
-    ctx.fillStyle = "rgba(142, 242, 215, 0.96)";
-    ctx.font = "500 28px 'Segoe UI', sans-serif";
-    ctx.fillText("Drift into resonance and click to enter", 48, 272);
+    ctx.fillText(subtitle, textX, 206);
+    ctx.fillStyle = "rgba(142, 242, 215, 0.98)";
+    ctx.font = "600 30px 'Segoe UI', sans-serif";
+    ctx.fillText(pointsRight ? "Click to enter  \u279C" : "\u2B05  Click to enter", textX, 272);
 
     const texture = new CanvasTexture(canvasTexture);
     texture.colorSpace = SRGBColorSpace;
@@ -129,69 +153,75 @@ if (!canvas) {
     return texture;
   }
 
+  // How far below a signboard its post ends, where the base ring sits.
+  const SIGN_POST_DROP = 2.1;
+
   function addRoadSigns() {
     if (!isImmersiveNexus) {
       return;
     }
 
+    // Spread around the field, nearest first: Academy, Custodian, Developer.
     const specs = [
+      {
+        label: "All Minds Academy",
+        route: "/agent-workshop/",
+        x: 5.0,
+        y: 1.5,
+        z: -5.5,
+        subtitle: "Bond chambers and apprenticeship",
+        color: 0x59b0ff,
+        palette: {
+          gradA: "rgba(96, 185, 255, 0.45)",
+          gradB: "rgba(51, 120, 205, 0.2)",
+          stroke: "rgba(182, 222, 255, 0.9)",
+        },
+        motion: { swirl: 1.28, pulse: 1.5, spin: 1.72 },
+      },
       {
         label: "Custodian Ops Center",
         route: "/custodian-ui/",
-        x: -6.8,
-        y: 0.8,
-        z: -8.5,
-        subtitle: "Stewardship + system continuity",
+        x: -7.0,
+        y: -0.9,
+        z: -11.5,
+        subtitle: "Stewardship and continuity",
         color: 0x6ef1d0,
         palette: {
           gradA: "rgba(80, 245, 205, 0.42)",
           gradB: "rgba(59, 158, 121, 0.18)",
-          stroke: "rgba(170, 255, 225, 0.82)",
+          stroke: "rgba(170, 255, 225, 0.9)",
         },
         motion: { swirl: 1.06, pulse: 1.2, spin: 1.25 },
       },
       {
         label: "Developers Depot",
         route: "/developer-depot/",
-        x: -7.9,
-        y: -1.6,
-        z: -21.6,
+        x: 5.4,
+        y: -2.1,
+        z: -18.5,
         subtitle: "Build lanes and protocol surfaces",
         color: 0xffb56b,
         palette: {
           gradA: "rgba(255, 191, 118, 0.44)",
           gradB: "rgba(201, 118, 54, 0.2)",
-          stroke: "rgba(255, 219, 174, 0.83)",
+          stroke: "rgba(255, 219, 174, 0.9)",
         },
         motion: { swirl: 0.98, pulse: 1.05, spin: 1.1 },
       },
-      {
-        label: "Agentic Workshop",
-        route: "/agent-workshop/",
-        x: 7.6,
-        y: -1.2,
-        z: -28.4,
-        subtitle: "Agent mesh and recursive systems",
-        color: 0x59b0ff,
-        palette: {
-          gradA: "rgba(96, 185, 255, 0.45)",
-          gradB: "rgba(51, 120, 205, 0.2)",
-          stroke: "rgba(182, 222, 255, 0.84)",
-        },
-        motion: { swirl: 1.28, pulse: 1.5, spin: 1.72 },
-      },
     ];
 
-    const signGeometry = new PlaneGeometry(2.6, 0.95);
+    const signGeometry = new PlaneGeometry(3.4, 1.2);
+    const postGeometry = new PlaneGeometry(0.07, 1.5);
 
     for (let i = 0; i < specs.length; i += 1) {
       const spec = specs[i];
-      const texture = makeRoadSignTexture(spec.label, spec.subtitle, spec.palette);
+      // The arrow points outward, away from the centre of the field.
+      const texture = makeRoadSignTexture(spec.label, spec.subtitle, spec.palette, spec.x >= 0);
       const material = new MeshBasicMaterial({
         map: texture,
         side: DoubleSide,
         transparent: true,
-        opacity: 0.92,
+        opacity: 0.96,
         depthWrite: false,
       });
       const sign = new Mesh(signGeometry, material);
@@ -212,8 +242,21 @@ if (!canvas) {
           depthWrite: false,
         }),
       );
-      halo.position.set(spec.x, spec.y - 0.72, spec.z + 0.02);
+      halo.position.set(spec.x, spec.y - SIGN_POST_DROP, spec.z + 0.02);
       scene.add(halo);
+
+      const post = new Mesh(
+        postGeometry,
+        new MeshBasicMaterial({
+          color: spec.color,
+          transparent: true,
+          opacity: 0.55,
+          side: DoubleSide,
+          depthWrite: false,
+        }),
+      );
+      post.position.set(spec.x, spec.y - 1.35, spec.z);
+      scene.add(post);
 
       const tunnelRings = [];
       for (let r = 0; r < 7; r += 1) {
@@ -235,6 +278,7 @@ if (!canvas) {
       roadSigns.push({
         sign,
         halo,
+        post,
         texture,
         material,
         tunnelRings,
@@ -256,7 +300,19 @@ if (!canvas) {
     "/media/billboard-soft-light-562.mp4",
   ];
   const activeBillboardSources = isCompact ? billboardSources.slice(0, 3) : billboardSources;
-  const billboardGeometry = new PlaneGeometry(1.9, 1.1);
+  const BILLBOARD_WIDTH = 3.2;
+  const BILLBOARD_HEIGHT = 1.8;
+  const billboardGeometry = new PlaneGeometry(BILLBOARD_WIDTH, BILLBOARD_HEIGHT);
+  // Spread through the field, clear of the destination signposts.
+  const billboardSpots = [
+    [-6.6, 2.5, -6.5],
+    [1.4, 3.0, -12.5],
+    [-2.8, -2.7, -15.5],
+    [7.6, -3.0, -11.0],
+    [-8.6, 1.3, -22.0],
+  ];
+  const billboardForward = new Vector3();
+  const billboardUp = new Vector3();
   const billboardMeshes = [];
   const billboardMaterials = [];
   const billboardTextures = [];
@@ -286,14 +342,13 @@ if (!canvas) {
         map: texture,
         side: DoubleSide,
         transparent: true,
-        opacity: 0.78,
-        blending: AdditiveBlending,
+        opacity: 0.9,
         depthWrite: false,
       });
 
       const mesh = new Mesh(billboardGeometry, material);
-      const arc = (i / activeBillboardSources.length) * Math.PI * 2;
-      mesh.position.set(Math.cos(arc) * 3.4, Math.sin(arc * 1.2) * 1.2, -4.2 - i * 1.2);
+      const spot = billboardSpots[i % billboardSpots.length];
+      mesh.position.set(spot[0], spot[1], spot[2]);
       scene.add(mesh);
 
       const start = video.play();
@@ -334,7 +389,8 @@ if (!canvas) {
     pointer.x = event.clientX / window.innerWidth - 0.5;
     pointer.y = event.clientY / window.innerHeight - 0.5;
     pointerNdc.x = pointer.x * 2;
-    pointerNdc.y = pointer.y * 2;
+    // Screen y grows downward; device coordinates grow upward.
+    pointerNdc.y = -pointer.y * 2;
     if (navMode === "drift" && driftDrag.active && !lockedRoadSign) {
       const deltaX = event.clientX - driftDrag.lastX;
       const deltaY = event.clientY - driftDrag.lastY;
@@ -463,13 +519,14 @@ if (!canvas) {
     selectedRoadSign = null;
     selectedBillboard = null;
     hoveredBillboard = null;
+    document.body.classList.remove("billboard-watching");
     if (navMode !== "drift" && lockedRoadSign) {
       releaseRoadSignFocus();
     }
   });
 
   function focusBillboard(item) {
-    if (!item) {
+    if (!item || selectedBillboard === item) {
       return;
     }
     selectedRoadSign = null;
@@ -478,19 +535,29 @@ if (!canvas) {
       releaseRoadSignFocus();
     }
     selectedBillboard = item;
+    document.body.classList.add("billboard-watching");
     if (signHint) {
       signHint.hidden = false;
-      signHint.textContent = `${item.label} aligned - press Esc or click open space to drift again`;
+      signHint.textContent = `${item.label} - press Esc or click open space to drift again`;
+    }
+    // Start the frame from its beginning so it can be watched through.
+    try {
+      item.video.currentTime = 0;
+      const playing = item.video.play();
+      if (playing && typeof playing.catch === "function") playing.catch(() => {});
+    } catch {
+      // Playback control is best-effort.
     }
   }
 
   function releaseBillboardFocus() {
     selectedBillboard = null;
+    document.body.classList.remove("billboard-watching");
     if (signHint) {
       signHint.hidden = hoveredRoadSign || hoveredBillboard ? false : true;
       if (!signHint.hidden) {
         if (hoveredBillboard) {
-          signHint.textContent = `${hoveredBillboard.label} signal frame - click to focus`;
+          signHint.textContent = `${hoveredBillboard.label} - click to watch`;
         } else if (hoveredRoadSign) {
           signHint.textContent = `${hoveredRoadSign.label} portal aligned - click to enter`;
         }
@@ -510,23 +577,46 @@ if (!canvas) {
       shard.position.y += Math.sin(t * 0.4 + drift) * 0.0009;
       shard.position.x += Math.cos(t * 0.34 + drift) * 0.0007;
     }
+    // A focused frame is held in front of the camera, sized to fit the view.
+    const focusDistance = 4.2;
+    const viewHeight = 2 * focusDistance * Math.tan((camera.fov * Math.PI) / 360);
+    const focusScale = Math.min(
+      (viewHeight * 0.66) / BILLBOARD_HEIGHT,
+      (viewHeight * camera.aspect * 0.88) / BILLBOARD_WIDTH,
+    );
+    camera.getWorldDirection(billboardForward);
+    // Sit slightly below centre so the frame clears the top navigation.
+    billboardUp.set(0, 1, 0).applyQuaternion(camera.quaternion);
+    const focusDrop = viewHeight * 0.07;
     for (let i = 0; i < billboardMeshes.length; i += 1) {
       const board = billboardMeshes[i];
       const wobble = board.phase;
       const isSelected = selectedBillboard === board;
       const isHovered = hoveredBillboard === board;
-      const targetX = isSelected ? roamPosition.x : board.baseX + Math.cos(t * 0.22 + wobble) * 0.22;
-      const targetY = isSelected ? roamPosition.y + 0.15 : board.baseY + Math.sin(t * 0.36 + wobble) * 0.17;
-      const targetZ = isSelected ? roamPosition.z - 2.7 : board.baseZ + Math.sin(t * 0.18 + wobble) * 0.25;
-      board.mesh.position.x += (targetX - board.mesh.position.x) * (isSelected ? 0.08 : 0.16);
-      board.mesh.position.y += (targetY - board.mesh.position.y) * (isSelected ? 0.08 : 0.16);
-      board.mesh.position.z += (targetZ - board.mesh.position.z) * (isSelected ? 0.08 : 0.16);
-      const targetScale = isSelected ? 2.2 : isHovered ? 1.18 : 1;
-      board.mesh.scale.x += (targetScale - board.mesh.scale.x) * 0.1;
-      board.mesh.scale.y += (targetScale - board.mesh.scale.y) * 0.1;
+      const targetX = isSelected
+        ? camera.position.x + billboardForward.x * focusDistance - billboardUp.x * focusDrop
+        : board.baseX + Math.cos(t * 0.22 + wobble) * 0.22;
+      const targetY = isSelected
+        ? camera.position.y + billboardForward.y * focusDistance - billboardUp.y * focusDrop
+        : board.baseY + Math.sin(t * 0.36 + wobble) * 0.17;
+      const targetZ = isSelected
+        ? camera.position.z + billboardForward.z * focusDistance - billboardUp.z * focusDrop
+        : board.baseZ + Math.sin(t * 0.18 + wobble) * 0.25;
+      const ease = isSelected ? 0.14 : 0.1;
+      board.mesh.position.x += (targetX - board.mesh.position.x) * ease;
+      board.mesh.position.y += (targetY - board.mesh.position.y) * ease;
+      board.mesh.position.z += (targetZ - board.mesh.position.z) * ease;
+      const targetScale = isSelected ? focusScale : isHovered ? 1.12 : 1;
+      board.mesh.scale.x += (targetScale - board.mesh.scale.x) * 0.12;
+      board.mesh.scale.y += (targetScale - board.mesh.scale.y) * 0.12;
       board.mesh.scale.z = 1;
-      board.material.opacity += (((isSelected ? 0.98 : isHovered ? 0.9 : 0.78)) - board.material.opacity) * 0.12;
-      board.mesh.lookAt(camera.position);
+      // While one frame is being watched, the others step back.
+      const targetOpacity = isSelected ? 1 : selectedBillboard ? 0.28 : isHovered ? 1 : 0.9;
+      board.material.opacity += (targetOpacity - board.material.opacity) * 0.12;
+      board.material.fog = !isSelected;
+      board.material.depthTest = !isSelected;
+      board.mesh.renderOrder = isSelected ? 10 : 0;
+      board.mesh.quaternion.copy(camera.quaternion);
     }
 
     if (roadSigns.length > 0) {
@@ -545,8 +635,10 @@ if (!canvas) {
         item.sign.lookAt(camera.position);
 
         item.halo.position.x = item.sign.position.x;
-        item.halo.position.y = item.sign.position.y - 0.72;
+        item.halo.position.y = item.sign.position.y - SIGN_POST_DROP;
         item.halo.position.z = item.sign.position.z + 0.02;
+        item.post.position.set(item.sign.position.x, item.sign.position.y - 1.35, item.sign.position.z);
+        item.post.quaternion.copy(item.sign.quaternion);
         item.halo.rotation.z += 0.006;
 
         const activeStrength = lockedRoadSign === item ? 1 : 0;
@@ -594,7 +686,7 @@ if (!canvas) {
       if (hoveredBillboard && !selectedBillboard) {
         if (signHint) {
           signHint.hidden = false;
-          signHint.textContent = `${hoveredBillboard.label} signal frame - click to focus`;
+          signHint.textContent = `${hoveredBillboard.label} - click to watch`;
         }
       } else if (focusCandidate) {
         focusRoadSign(focusCandidate, focusCandidate === nearest ? nearestProjection : null);
@@ -624,14 +716,7 @@ if (!canvas) {
       roamPosition.z += (0 - roamPosition.z) * 0.08;
     }
 
-    if (selectedBillboard) {
-      const focusX = selectedBillboard.mesh.position.x;
-      const focusY = selectedBillboard.mesh.position.y;
-      const focusZ = selectedBillboard.mesh.position.z + 2.15;
-      camera.position.x += (focusX - camera.position.x) * 0.06;
-      camera.position.y += (focusY - camera.position.y) * 0.06;
-      camera.position.z += (focusZ - camera.position.z) * 0.06;
-    } else if (hasEntranceFocus) {
+    if (hasEntranceFocus) {
       const focusX = selectedRoadSign ? selectedRoadSign.sign.position.x : roamPosition.x + driftTarget.x;
       const focusY = selectedRoadSign ? selectedRoadSign.sign.position.y : roamPosition.y + driftTarget.y;
       const focusZ = selectedRoadSign ? selectedRoadSign.sign.position.z + 3.9 : roamPosition.z + 5.05;
@@ -661,19 +746,13 @@ if (!canvas) {
     }
     const targetBaseX = selectedRoadSign
       ? selectedRoadSign.sign.position.x
-      : selectedBillboard
-        ? selectedBillboard.mesh.position.x
-        : navMode === "drift" ? roamPosition.x + pointer.x * 0.75 : pointer.x * 0.35;
+      : navMode === "drift" ? roamPosition.x + pointer.x * 0.75 : pointer.x * 0.35;
     const targetBaseY = selectedRoadSign
       ? selectedRoadSign.sign.position.y
-      : selectedBillboard
-        ? selectedBillboard.mesh.position.y
-        : navMode === "drift" ? roamPosition.y + pointer.y * 0.3 : pointer.y * 0.14;
+      : navMode === "drift" ? roamPosition.y + pointer.y * 0.3 : pointer.y * 0.14;
     const targetBaseZ = selectedRoadSign
       ? selectedRoadSign.sign.position.z - 6.5
-      : selectedBillboard
-        ? selectedBillboard.mesh.position.z - 1.25
-        : navMode === "drift" ? roamPosition.z - 7.5 : -0.2;
+      : navMode === "drift" ? roamPosition.z - 7.5 : -0.2;
     cameraTarget.x += (targetBaseX - cameraTarget.x) * 0.05;
     cameraTarget.y += ((-targetBaseY) - cameraTarget.y) * 0.05;
     cameraTarget.z += (targetBaseZ - cameraTarget.z) * 0.05;
@@ -718,11 +797,13 @@ if (!canvas) {
     driftDrag.active = false;
   });
 
+  // Esc closes a watched frame first; only a second Esc leaves the Drift.
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && selectedBillboard) {
+      event.stopImmediatePropagation();
       releaseBillboardFocus();
     }
-  });
+  }, true);
 
   window.addEventListener("beforeunload", () => {
     window.cancelAnimationFrame(raf);
@@ -745,6 +826,8 @@ if (!canvas) {
       roadSigns[i].sign.geometry.dispose();
       roadSigns[i].halo.geometry.dispose();
       roadSigns[i].halo.material.dispose();
+      roadSigns[i].post.geometry.dispose();
+      roadSigns[i].post.material.dispose();
       for (let r = 0; r < roadSigns[i].tunnelRings.length; r += 1) {
         roadSigns[i].tunnelRings[r].geometry.dispose();
         roadSigns[i].tunnelRings[r].material.dispose();

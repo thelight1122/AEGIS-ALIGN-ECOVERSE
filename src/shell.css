@@ -2605,4 +2605,11 @@ body.surface-flight-ready .flight-surface {
   display: block;
 }
 
+/* While a Drift billboard is being watched, the floating signal words step back. */
+.signal-constellation {
+  transition: opacity 320ms ease;
+}
 
+body.billboard-watching .signal-constellation {
+  opacity: 0;
+}
