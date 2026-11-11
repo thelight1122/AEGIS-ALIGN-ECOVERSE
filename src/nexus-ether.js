@@ -484,6 +484,8 @@ if (!canvas) {
       return;
     }
     selectedBillboard = null;
+    muteBillboards();
+    document.body.classList.remove("billboard-watching");
     selectedRoadSign = item;
     focusRoadSign(item);
     transitPull = 1.85;
@@ -519,6 +521,7 @@ if (!canvas) {
     selectedRoadSign = null;
     selectedBillboard = null;
     hoveredBillboard = null;
+    muteBillboards();
     document.body.classList.remove("billboard-watching");
     if (navMode !== "drift" && lockedRoadSign) {
       releaseRoadSignFocus();
@@ -534,14 +537,18 @@ if (!canvas) {
     if (lockedRoadSign) {
       releaseRoadSignFocus();
     }
+    muteBillboards();
     selectedBillboard = item;
     document.body.classList.add("billboard-watching");
     if (signHint) {
       signHint.hidden = false;
       signHint.textContent = `${item.label} - press Esc or click open space to drift again`;
     }
-    // Start the frame from its beginning so it can be watched through.
+    // Start the frame from its beginning, with sound, so it can be watched through.
+    // The click that opened it is the user gesture browsers require for audio.
     try {
+      item.video.muted = false;
+      item.video.volume = 1;
       item.video.currentTime = 0;
       const playing = item.video.play();
       if (playing && typeof playing.catch === "function") playing.catch(() => {});
@@ -550,7 +557,14 @@ if (!canvas) {
     }
   }
 
+  function muteBillboards() {
+    for (let i = 0; i < billboardVideos.length; i += 1) {
+      billboardVideos[i].muted = true;
+    }
+  }
+
   function releaseBillboardFocus() {
+    muteBillboards();
     selectedBillboard = null;
     document.body.classList.remove("billboard-watching");
     if (signHint) {
