@@ -831,21 +831,6 @@ function iframeBehaviorScript(buttonMappings = [], domainSlug = "", autoTransiti
     </script>`;
 }
 
-function nexusVideoTemplate() {
-  return `<video
-    id="ether-video"
-    class="ether-video"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="metadata"
-    aria-hidden="true"
-  >
-    <source src="/media/nexus-ether-soft-light.mp4" type="video/mp4" />
-  </video>`;
-}
-
 function etherCanvasTemplate() {
   return '<canvas id="ether-canvas" aria-hidden="true"></canvas>';
 }
@@ -1505,7 +1490,6 @@ function nexusTemplate(hubs, pages) {
   </head>
   <body class="immersive-root nexus-surface with-ambient-signals">
     ${etherCanvasTemplate()}
-    ${nexusVideoTemplate()}
     <div class="layout">
       <header class="topbar">
         <div class="topbar-inner">
