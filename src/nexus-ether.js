@@ -1,7 +1,5 @@
 import {
   AdditiveBlending,
-  BufferAttribute,
-  BufferGeometry,
   CanvasTexture,
   Clock,
   DoubleSide,
@@ -12,8 +10,6 @@ import {
   MeshBasicMaterial,
   PerspectiveCamera,
   PlaneGeometry,
-  Points,
-  PointsMaterial,
   Raycaster,
   RingGeometry,
   Scene,
@@ -24,6 +20,8 @@ import {
   VideoTexture,
   WebGLRenderer,
 } from "three";
+// The Aether field draws on its own canvas behind this scene and the page content.
+import "./aether-field.js";
 
 const canvas = document.getElementById("ether-canvas");
 if (!canvas) {
@@ -63,50 +61,6 @@ if (!canvas) {
   let navMode = document.body.classList.contains("nexus-drift-mode") ? "drift" : "direct";
   let wheelImpulse = 0;
   const activeKeys = new Set();
-
-  const starGeometry = new BufferGeometry();
-  const starCount = 2500;
-  const positions = new Float32Array(starCount * 3);
-  for (let i = 0; i < starCount; i += 1) {
-    positions[i * 3] = (Math.random() - 0.5) * 24;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-    positions[i * 3 + 2] = -Math.random() * 28;
-  }
-  starGeometry.setAttribute("position", new BufferAttribute(positions, 3));
-
-  const starMaterial = new PointsMaterial({
-    color: 0xa6d8ff,
-    size: 0.024,
-    transparent: true,
-    opacity: 0.85,
-    blending: AdditiveBlending,
-    depthWrite: false,
-  });
-
-  const stars = new Points(starGeometry, starMaterial);
-  scene.add(stars);
-
-  const veilGeometry = new BufferGeometry();
-  const veilCount = 900;
-  const veilPositions = new Float32Array(veilCount * 3);
-  for (let i = 0; i < veilCount; i += 1) {
-    veilPositions[i * 3] = (Math.random() - 0.5) * 16;
-    veilPositions[i * 3 + 1] = (Math.random() - 0.5) * 8;
-    veilPositions[i * 3 + 2] = -Math.random() * 24;
-  }
-  veilGeometry.setAttribute("position", new BufferAttribute(veilPositions, 3));
-
-  const veilMaterial = new PointsMaterial({
-    color: 0x84ffd2,
-    size: 0.015,
-    transparent: true,
-    opacity: 0.55,
-    blending: AdditiveBlending,
-    depthWrite: false,
-  });
-
-  const veil = new Points(veilGeometry, veilMaterial);
-  scene.add(veil);
 
   const glowGeometry = new TorusGeometry(1.2, 0.08, 16, 96);
   const glowMaterial = new MeshBasicMaterial({
@@ -195,21 +149,6 @@ if (!canvas) {
           stroke: "rgba(170, 255, 225, 0.82)",
         },
         motion: { swirl: 1.06, pulse: 1.2, spin: 1.25 },
-      },
-      {
-        label: "AEGIS Application Lab",
-        route: "/aegis-application-lab/",
-        x: 6.4,
-        y: 1.3,
-        z: -14.8,
-        subtitle: "Live demos and practical exploration",
-        color: 0x7f66ff,
-        palette: {
-          gradA: "rgba(151, 119, 255, 0.45)",
-          gradB: "rgba(95, 76, 228, 0.2)",
-          stroke: "rgba(210, 192, 255, 0.84)",
-        },
-        motion: { swirl: 1.18, pulse: 1.35, spin: 1.5 },
       },
       {
         label: "Developers Depot",
@@ -562,13 +501,6 @@ if (!canvas) {
   function tick() {
     const delta = Math.min(clock.getDelta(), 0.04);
     const t = clock.elapsedTime;
-    stars.rotation.y = t * 0.02;
-    stars.rotation.x = Math.sin(t * 0.11) * 0.05;
-    stars.position.z = Math.sin(t * 0.2) * 0.15;
-    stars.position.x = pointer.x * 0.4;
-    stars.position.y = -pointer.y * 0.3;
-    veil.rotation.y = -t * 0.015;
-    veil.position.y = Math.sin(t * 0.33) * 0.08;
     glow.rotation.z = t * 0.12;
     for (let i = 0; i < shards.length; i += 1) {
       const shard = shards[i];
@@ -799,10 +731,6 @@ if (!canvas) {
     window.removeEventListener("keyup", onKeyUp);
     window.removeEventListener("wheel", onWheel);
     renderer.dispose();
-    starGeometry.dispose();
-    starMaterial.dispose();
-    veilGeometry.dispose();
-    veilMaterial.dispose();
     glowGeometry.dispose();
     glowMaterial.dispose();
     shardGeometry.dispose();

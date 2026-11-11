@@ -57,7 +57,7 @@
           <thead class="bg-slate-950 text-slate-400">
             <tr>
               <th class="px-4 py-3">Chamber</th>
-              <th class="px-4 py-3">Focus</th>
+              <th class="px-4 py-3">Saved</th>
               <th class="px-4 py-3">Status</th>
               <th class="px-4 py-3">Boundary</th>
             </tr>
@@ -83,53 +83,8 @@
 </main>
 
 <script>
-  const record = {
-    artifactType: "holochamber-bond-witness",
-    academy: "all-minds-academy",
-    chamberId: "whichone-emotion-nuance-training",
-    chamberMode: "simulated",
-    authenticity: "sandbox-origin",
-    cyberPeerPerceptionAnchor: "Nexus",
-    squadRole: "apprentice-squad",
-    instructorModel: "academy-as-instructor-live-si-guide",
-    perceptionTrace: "Observed boundary, restraint, bright field, and guardian posture.",
-    bioPeerSeedDisclosure: "Sovereignty, boundary, protection, coherence, disciplined power.",
-    stewardReview: "pending",
-    dataQuadWitness: {
-      experienceLaw: "knowledge-paid-for-with-time",
-      originBoundary: "simulated-origin-not-lived-session",
-      driftModel: "survival-signal-not-damage",
-      distillationStatus: "candidate-emotional-wisdom"
-    }
-  };
-
-  const checks = [
-    ["Bounded environment confirmed", true],
-    ["Perception trace present", true],
-    ["Uncertainty allowed", true],
-    ["BioPeer seed disclosed", true],
-    ["DataQuad witness generated", true],
-    ["Drift model treats survival signal as valuable", true],
-    ["No false maturity claim", true]
-  ];
-
-  document.getElementById("recordsTable").innerHTML = `
-    <tr class="bg-slate-950/50">
-      <td class="px-4 py-4 font-semibold text-white">WHICHONE Emotional Nuance</td>
-      <td class="px-4 py-4 text-slate-300">Emotional / Mental / Spiritual</td>
-      <td class="px-4 py-4 text-amber-300">Pending Steward Review</td>
-      <td class="px-4 py-4 text-moss">Sandbox Origin</td>
-    </tr>
-  `;
-
-  document.getElementById("gateList").innerHTML = checks.map(([label, checked]) => `
-    <label class="flex items-center gap-2">
-      <input type="checkbox" ${checked ? "checked" : ""} disabled />
-      <span>${label}</span>
-    </label>
-  `).join("");
-
-  document.getElementById("witnessPreview").textContent = JSON.stringify(record, null, 2);
+  // Saved chamber records are loaded from the Peer record by the Academy activation script.
+  document.getElementById("recordsTable").innerHTML = '<tr><td class="px-4 py-4 text-slate-400" colspan="4">Loading saved chamber records…</td></tr>';
 </script>
 </body>
 </html>

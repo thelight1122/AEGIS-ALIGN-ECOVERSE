@@ -227,6 +227,23 @@ a {
     filter 420ms ease;
 }
 
+/* While the Aether is drawing, the body's own gradient steps aside so the field shows through.
+   The html gradient stays underneath as the fallback when WebGL is unavailable. */
+html.aether-live body,
+html.aether-live body.domain-surface {
+  background: transparent;
+}
+
+/* The Aether field sits behind the ether video, the 3D scene canvas and all content. */
+#aether-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  pointer-events: none;
+}
+
 .ether-video {
   position: fixed;
   inset: 0;

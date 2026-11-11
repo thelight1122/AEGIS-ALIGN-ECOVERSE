@@ -1,61 +1,5 @@
 [
   {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-arbitor-features-1",
-    "title": "Arbitor Overview",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_arbitor_features_1/code.html",
-    "routePath": "/aegis-application-lab/aegis-arbitor-features-1/"
-  },
-  {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-arbitor-features-2",
-    "title": "Arbitor Consensus",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_arbitor_features_2/code.html",
-    "routePath": "/aegis-application-lab/aegis-arbitor-features-2/"
-  },
-  {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-core-shield-features",
-    "title": "AEGIS Core Shield | Infrastructure Hardening",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_core_shield_features/code.html",
-    "routePath": "/aegis-application-lab/aegis-core-shield-features/"
-  },
-  {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-implementation-apps",
-    "title": "AEGIS Implementation Apps | AegisAlign",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_implementation_apps/code.html",
-    "routePath": "/aegis-application-lab/aegis-implementation-apps/"
-  },
-  {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-interceptor-features-v2",
-    "title": "AEGIS Interceptor | Deep Packet Security",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_interceptor_features_v2/code.html",
-    "routePath": "/aegis-application-lab/aegis-interceptor-features-v2/"
-  },
-  {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-llm-colab-and-agentic-workshop",
-    "title": "LLM Colab Workshop",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_llm_colab_and_agentic_workshop/code.html",
-    "routePath": "/aegis-application-lab/aegis-llm-colab-and-agentic-workshop/"
-  },
-  {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-reflective-prism-features",
-    "title": "Aegis Reflective Prism Features",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_reflective_prism_features/code.html",
-    "routePath": "/aegis-application-lab/aegis-reflective-prism-features/"
-  },
-  {
-    "domain": "aegis-application-lab",
-    "slug": "aegis-reflective-widget-features",
-    "title": "AEGIS Reflective Widget | AegisAlign Security",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/AEGIS_Application_Lab/aegis_reflective_widget_features/code.html",
-    "routePath": "/aegis-application-lab/aegis-reflective-widget-features/"
-  },
-  {
     "domain": "agent-workshop",
     "slug": "active-agents-monitor-agentic-workshop",
     "title": "Active CyberPeers Monitor",
@@ -106,80 +50,10 @@
   },
   {
     "domain": "agent-workshop",
-    "slug": "ai-audit-analysis-recursive-training",
-    "title": "SI Audit Analysis",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/ai_audit_analysis_recursive_training/code.html",
-    "routePath": "/agent-workshop/ai-audit-analysis-recursive-training/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "anomaly-analysis-detail",
-    "title": "Anomaly Analysis Detail",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/anomaly_analysis_detail/code.html",
-    "routePath": "/agent-workshop/anomaly-analysis-detail/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "bulk-export-progress-modal",
-    "title": "AEGIS All Minds Academy - Export Workflow Moved",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/bulk_export_progress_modal/code.html",
-    "routePath": "/agent-workshop/bulk-export-progress-modal/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "create-new-agent-dataquad-memory-configuration",
-    "title": "DataQuad Memory",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/create_new_agent_dataquad_memory_configuration/code.html",
-    "routePath": "/agent-workshop/create-new-agent-dataquad-memory-configuration/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "create-new-agent-flow",
-    "title": "Form New Squad",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/create_new_agent_flow/code.html",
-    "routePath": "/agent-workshop/create-new-agent-flow/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "create-new-agent-identity-configuration",
-    "title": "Identity Configuration",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/create_new_agent_identity_configuration/code.html",
-    "routePath": "/agent-workshop/create-new-agent-identity-configuration/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "create-new-agent-logic-intelligence",
-    "title": "Logic & Intelligence",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/create_new_agent_logic_intelligence/code.html",
-    "routePath": "/agent-workshop/create-new-agent-logic-intelligence/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "create-new-agent-memory-rag",
-    "title": "Memory & RAG",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/create_new_agent_memory_rag/code.html",
-    "routePath": "/agent-workshop/create-new-agent-memory-rag/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "dataquad-agent-deployment",
-    "title": "DataQuad Deployment",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/dataquad_agent_deployment/code.html",
-    "routePath": "/agent-workshop/dataquad-agent-deployment/"
-  },
-  {
-    "domain": "agent-workshop",
     "slug": "detailed-agent-view-dataquad-node",
     "title": "Detailed CyberPeer View",
     "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/detailed_agent_view_dataquad_node/code.html",
     "routePath": "/agent-workshop/detailed-agent-view-dataquad-node/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "global-anomaly-heatmap",
-    "title": "Global Anomaly Heatmap",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/global_anomaly_heatmap/code.html",
-    "routePath": "/agent-workshop/global-anomaly-heatmap/"
   },
   {
     "domain": "agent-workshop",
@@ -204,31 +78,10 @@
   },
   {
     "domain": "agent-workshop",
-    "slug": "recursive-logic-debugger-agentic-workshop",
-    "title": "Recursive Logic Debugger",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/recursive_logic_debugger_agentic_workshop/code.html",
-    "routePath": "/agent-workshop/recursive-logic-debugger-agentic-workshop/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "recursive-training-progress-report",
-    "title": "Recursive Progress Report",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/recursive_training_progress_report/code.html",
-    "routePath": "/agent-workshop/recursive-training-progress-report/"
-  },
-  {
-    "domain": "agent-workshop",
     "slug": "sssp-respawn-archive-1",
     "title": "Governed Respawn Archive",
     "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/sssp_respawn_archive_1/code.html",
     "routePath": "/agent-workshop/sssp-respawn-archive-1/"
-  },
-  {
-    "domain": "agent-workshop",
-    "slug": "sssp-respawn-archive-2",
-    "title": "AEGIS All Minds Academy - Archive Route Consolidated",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Agent_Workshop/sssp_respawn_archive_2/code.html",
-    "routePath": "/agent-workshop/sssp-respawn-archive-2/"
   },
   {
     "domain": "agent-workshop",
@@ -512,13 +365,6 @@
   },
   {
     "domain": "nexus",
-    "slug": "aegisalign-pricing-plans",
-    "title": "Pricing - AegisAlign",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Landing_Pages/aegisalign_pricing_plans/code.html",
-    "routePath": "/nexus/aegisalign-pricing-plans/"
-  },
-  {
-    "domain": "nexus",
     "slug": "aegisalign-settings",
     "title": "Aegisalign Settings",
     "sourcePath": "Stitch-UIs-for-AegisAlign/Landing_Pages/aegisalign_settings/code.html",
@@ -544,12 +390,5 @@
     "title": "Multi Factor Authentication",
     "sourcePath": "Stitch-UIs-for-AegisAlign/Landing_Pages/multi_factor_authentication/code.html",
     "routePath": "/nexus/multi-factor-authentication/"
-  },
-  {
-    "domain": "nexus",
-    "slug": "signup-aegisalign",
-    "title": "Sign Up | AegisAlign Protocol",
-    "sourcePath": "Stitch-UIs-for-AegisAlign/Landing_Pages/signup_aegisalign/code.html",
-    "routePath": "/nexus/signup-aegisalign/"
   }
 ]

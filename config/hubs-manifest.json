@@ -8,14 +8,6 @@
     "description": "Operational guidance, mission governance, health monitoring, and recovery workflows."
   },
   {
-    "id": "application-lab",
-    "label": "AEGIS Application Lab",
-    "route": "/aegis-application-lab/",
-    "domainSlug": "aegis-application-lab",
-    "status": "live",
-    "description": "Interactive demos and productized AEGIS application experiences."
-  },
-  {
     "id": "developer-depot",
     "label": "Developers Depot",
     "route": "/developer-depot/",

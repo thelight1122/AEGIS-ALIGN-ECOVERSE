@@ -11480,3 +11480,97 @@ export async function fetchBetaPeerRuntime() {
     ).slice(0, 10),
   };
 }
+
+export const BOND_CHAMBER_WITNESS_EVENT = "bond_chamber_witness_recorded";
+
+/**
+ * Save one Academy bond-chamber response to Adam-One's record.
+ *
+ * The response is stored as candidate evidence pending Steward review. It is a new event and a
+ * new artifact; it does not count as a Steward-reviewed temporal memory append, and it marks the
+ * Steward state as needing review.
+ */
+export async function recordBetaPeerChamberWitness({
+  chamberId,
+  chamberLabel,
+  source,
+  witness,
+} = {}) {
+  if (!chamberId || !chamberLabel || !source) {
+    throw new Error("chamberId, chamberLabel and source are required.");
+  }
+  if (!witness || typeof witness !== "object" || Array.isArray(witness)) {
+    throw new Error("A witness record is required.");
+  }
+
+  const db = getAegisFirestore();
+  const peerRef = doc(db, "peers", BETA_PEER_ID);
+  const stewardRef = doc(db, "peer_steward_state", BETA_PEER_ID);
+  const eventRef = doc(collection(db, "peer_memory_events"));
+  const artifactRef = doc(collection(db, "peer_artifacts"));
+  const summary = `Recorded a ${chamberLabel} response as candidate evidence pending Steward review.`;
+
+  return runTransaction(db, async (transaction) => {
+    const peerSnap = await transaction.get(peerRef);
+    if (!peerSnap.exists()) {
+      throw new Error("Beta Peer does not exist yet.");
+    }
+
+    transaction.update(peerRef, {
+      lastActionAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    transaction.set(stewardRef, {
+      peerId: BETA_PEER_ID,
+      reviewRequired: true,
+      lastUpdatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    transaction.set(eventRef, buildTemporalMemoryEvent({
+      source,
+      summary,
+      eventType: BOND_CHAMBER_WITNESS_EVENT,
+      details: {
+        chamberId,
+        chamberLabel,
+        reviewState: "pending_steward_review",
+        recordedVia: "academy_chamber_page",
+        artifactId: artifactRef.id,
+        witness,
+      },
+    }));
+
+    transaction.set(artifactRef, {
+      artifactId: artifactRef.id,
+      peerId: BETA_PEER_ID,
+      type: "bond_chamber_witness",
+      title: `${chamberLabel} witness record`,
+      content: JSON.stringify(witness, null, 2),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      reviewState: "pending_review",
+      source,
+      linkedEventId: eventRef.id,
+    });
+
+    return {
+      peerId: BETA_PEER_ID,
+      eventId: eventRef.id,
+      artifactId: artifactRef.id,
+      summary,
+    };
+  });
+}
+
+/** Every saved bond-chamber response for Adam-One, newest first. */
+export async function fetchBetaPeerChamberWitnesses() {
+  const db = getAegisFirestore();
+  const eventsSnap = await getDocs(collection(db, "peer_memory_events"));
+  return sortDocsDesc(
+    eventsSnap.docs
+      .map((item) => normalizeDoc(item))
+      .filter((item) => item?.peerId === BETA_PEER_ID && item?.eventType === BOND_CHAMBER_WITNESS_EVENT),
+    "timestamp",
+  );
+}

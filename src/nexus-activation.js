@@ -2,7 +2,6 @@ import {
   observeAuthSession,
   requestPasswordReset,
   signInWithEmail,
-  signUpWithEmail,
   updateAccountProfile,
 } from "./auth-session.js";
 
@@ -307,6 +306,14 @@ function findButton(doc, text) {
   }) || null;
 }
 
+// Controls that led into the retired subscription funnel are taken off the page.
+function retireControl(node) {
+  if (!node) return;
+  node.hidden = true;
+  node.style.display = "none";
+  node.setAttribute("aria-hidden", "true");
+}
+
 function bindManagedClick(node, handler) {
   if (!node || node.dataset.aegisManaged === "true") {
     return;
@@ -402,85 +409,6 @@ function enhanceLogin(doc) {
       });
       applySessionState(session, { onboardingStage: "active" });
       setMessage(form, "Live account confirmed. Routing through the secure session handoff.", "success");
-      window.setTimeout(() => navigateTo("/nexus/login-success-transition/"), 180);
-    } catch (error) {
-      setMessage(form, authErrorMessage(error), "error");
-    } finally {
-      submit?.removeAttribute("disabled");
-    }
-  };
-
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    handleSubmit();
-  });
-  bindManagedClick(submit, handleSubmit);
-}
-
-function enhanceSignup(doc) {
-  if (doc.body.dataset.aegisEnhancedSignup === "true") return;
-  doc.body.dataset.aegisEnhancedSignup = "true";
-  injectStyles(doc);
-
-  const form = doc.querySelector("form");
-  const inputs = Array.from(form?.querySelectorAll("input") || []);
-  const [fullName, email, company, password] = inputs;
-  const submit = findButton(doc, "Create Account");
-  const state = readState();
-
-  if (fullName) fullName.value = state.profile.fullName || "";
-  if (email) email.value = state.profile.email || "";
-  if (company) company.value = state.profile.company || "";
-
-  for (const field of [fullName, email, company]) {
-    field?.addEventListener("input", () => {
-      patchState({
-        profile: {
-          fullName: fullName?.value || "",
-          email: email?.value || "",
-          company: company?.value || "",
-        },
-      });
-    });
-  }
-
-  const handleSubmit = async () => {
-    const fullNameValue = (fullName?.value || "").trim();
-    const emailValue = (email?.value || "").trim();
-    const companyValue = (company?.value || "").trim();
-    const passwordValue = password?.value || "";
-    if (fullNameValue.length < 3) {
-      setMessage(form, "Enter the Peer name for this workspace before continuing.", "error");
-      fullName?.focus();
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-      setMessage(form, "A valid work email is required for governed onboarding.", "error");
-      email?.focus();
-      return;
-    }
-    if (companyValue.length < 2) {
-      setMessage(form, "Add the organization or workspace name tied to this protocol account.", "error");
-      company?.focus();
-      return;
-    }
-    if (passwordValue.length < 12) {
-      setMessage(form, "Create a stronger password. This signup surface expects at least 12 characters.", "error");
-      password?.focus();
-      return;
-    }
-    try {
-      submit?.setAttribute("disabled", "disabled");
-      setMessage(form, "Creating the live EcoVerse account...", "success");
-      const session = await signUpWithEmail({
-        fullName: fullNameValue,
-        email: emailValue,
-        company: companyValue,
-        password: passwordValue,
-        rememberDevice: true,
-      });
-      applySessionState(session, { onboardingStage: "active" });
-      setMessage(form, "Account created and profile saved. Routing through the secure session handoff.", "success");
       window.setTimeout(() => navigateTo("/nexus/login-success-transition/"), 180);
     } catch (error) {
       setMessage(form, authErrorMessage(error), "error");
@@ -729,7 +657,7 @@ function enhanceDocs(doc) {
     patchState({ docs: { ...readState().docs, helpfulVote: "no" } });
     showToast(doc, "Feedback captured. This doc surface is marked for improvement.");
   });
-  bindManagedClick(bookSession, () => navigateTo("/nexus/aegisalign-pricing-plans/"));
+  retireControl(bookSession);
   bindManagedClick(openTrainingJournal, () => {
     patchState({
       lastRoute: "aegis-protocol-documentation-portal",
@@ -996,8 +924,8 @@ function enhancePeerProfile(doc) {
     showToast(doc, "Starter systems queued in the Peer workspace. Opening the documentation handoff.");
     window.setTimeout(() => navigateTo("/nexus/aegis-protocol-documentation-portal/"), 180);
   });
-  bindManagedClick(subscriberPath, () => navigateTo("/nexus/aegisalign-pricing-plans/"));
-  bindManagedClick(viewPlans, () => navigateTo("/nexus/aegisalign-pricing-plans/"));
+  retireControl(subscriberPath);
+  retireControl(viewPlans);
   bindManagedClick(trustedSettings, () => navigateTo("/nexus/aegisalign-settings/"));
   bindManagedClick(openDemo, () => navigateTo("/nexus/aegis-protocol-dashboard/"));
 
@@ -1008,83 +936,6 @@ function enhancePeerProfile(doc) {
   });
   profileHero?.classList.add("aegis-highlight-ring");
   window.setTimeout(() => profileHero?.classList.remove("aegis-highlight-ring"), 1000);
-}
-
-function enhancePricing(doc) {
-  if (doc.body.dataset.aegisEnhancedPricing === "true") return;
-  doc.body.dataset.aegisEnhancedPricing = "true";
-  injectStyles(doc);
-
-  const signupButtons = [
-    findButton(doc, "Sign Up"),
-    findButton(doc, "Start Free Trial"),
-    findButton(doc, "Get Started"),
-    findButton(doc, "Get Started Now"),
-  ].filter(Boolean);
-  const login = findButton(doc, "Login");
-  const contactSales = findButton(doc, "Contact Sales");
-  const scheduleDemo = findButton(doc, "Schedule Demo");
-  const activateSubscriber = findButton(doc, "Activate Subscriber");
-  const openLiveDemo = findButton(doc, "Open Live Demo");
-  const queueStarter = findButton(doc, "Queue Starter Kit");
-  const planCards = Array.from(doc.querySelectorAll(".rounded-3xl, .rounded-2xl, .rounded-xl, [class*='plan'], [class*='pricing']"));
-
-  const setUpgradeIntent = (planLabel = "Subscriber") => {
-    patchState({
-      subscription: planLabel,
-      upgradeInterest: true,
-      lastRoute: "aegisalign-pricing-plans",
-      lastSeenAt: new Date().toISOString(),
-    });
-  };
-
-  signupButtons.forEach((button) => bindManagedClick(button, () => {
-    const label = normalizeText(button.textContent);
-    const planLabel = label.includes("trial") ? "Explorer Trial" : "Subscriber";
-    setUpgradeIntent(planLabel);
-    navigateTo("/nexus/signup-aegisalign/");
-  }));
-  bindManagedClick(login, () => navigateTo("/nexus/login-aegisalign/"));
-  bindManagedClick(contactSales, () => {
-    setUpgradeIntent("Enterprise");
-    showToast(doc, "Enterprise interest captured in local Nexus state. Routing to the docs handoff.");
-    window.setTimeout(() => navigateTo("/nexus/aegis-protocol-documentation-portal/"), 180);
-  });
-  bindManagedClick(scheduleDemo, () => {
-    setUpgradeIntent("Guided Demo");
-    navigateTo("/nexus/aegis-protocol-dashboard/");
-  });
-  bindManagedClick(activateSubscriber, () => {
-    setUpgradeIntent("Subscriber");
-    const state = readState();
-    navigateTo(state.signedIn ? "/nexus/aegis-peer-profile/" : "/nexus/signup-aegisalign/");
-  });
-  bindManagedClick(openLiveDemo, () => navigateTo("/nexus/aegis-protocol-dashboard/"));
-  bindManagedClick(queueStarter, () => {
-    patchState({
-      starterQueued: true,
-      lastRoute: "aegisalign-pricing-plans",
-      lastSeenAt: new Date().toISOString(),
-    });
-    showToast(doc, "Starter kit queued. Opening the documentation portal.");
-    window.setTimeout(() => navigateTo("/nexus/aegis-protocol-documentation-portal/"), 180);
-  });
-
-  planCards.forEach((card) => {
-    const label = normalizeText(card.textContent);
-    if (label.includes("subscriber") || label.includes("enterprise") || label.includes("starter")) {
-      card.style.cursor = "pointer";
-      bindManagedClick(card, () => {
-        const planLabel = label.includes("enterprise")
-          ? "Enterprise"
-          : label.includes("subscriber")
-            ? "Subscriber"
-            : "Starter";
-        setUpgradeIntent(planLabel);
-        showToast(doc, `${planLabel} path selected for this Peer.`);
-      });
-    }
-  });
 }
 
 function enhanceGovernanceHub(doc) {
@@ -1115,14 +966,7 @@ function enhanceGovernanceHub(doc) {
     });
     navigateTo("/nexus/aegis-protocol-documentation-portal/");
   });
-  bindManagedClick(unlockFull, () => {
-    patchState({
-      upgradeInterest: true,
-      lastRoute: "aegis-governance-hub",
-      lastSeenAt: new Date().toISOString(),
-    });
-    navigateTo("/nexus/aegisalign-pricing-plans/");
-  });
+  retireControl(unlockFull);
   bindManagedClick(openDocs, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(returnToNexus, () => navigateTo("/nexus/aegisalign-landing-page/"));
   bindManagedClick(openTrainingJournal, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
@@ -1177,28 +1021,12 @@ function enhanceProtocolFeatures(doc) {
     });
     navigateTo("/nexus/aegis-protocol-documentation-portal/");
   });
-  bindManagedClick(unlockFull, () => {
-    patchState({
-      upgradeInterest: true,
-      lastRoute: "aegis-protocol-features",
-      lastSeenAt: new Date().toISOString(),
-    });
-    navigateTo("/nexus/aegisalign-pricing-plans/");
-  });
-  bindManagedClick(getStarted, () => navigateTo("/nexus/signup-aegisalign/"));
+  retireControl(unlockFull);
+  retireControl(getStarted);
   bindManagedClick(exploreSpecs, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(viewDemo, () => navigateTo("/nexus/aegis-protocol-dashboard/"));
   bindManagedClick(goToDocs, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
-  bindManagedClick(contactArchitect, () => {
-    patchState({
-      upgradeInterest: true,
-      subscription: "Architect Review",
-      lastRoute: "aegis-protocol-features",
-      lastSeenAt: new Date().toISOString(),
-    });
-    showToast(doc, "Architect consult intent captured. Opening the pricing and access surface.");
-    window.setTimeout(() => navigateTo("/nexus/aegisalign-pricing-plans/"), 180);
-  });
+  retireControl(contactArchitect);
   bindManagedClick(reviewGovernance, () => navigateTo("/nexus/aegis-governance-hub/"));
   bindManagedClick(exploreWorkshop, () => navigateTo("/agent-workshop/agentic-workshop-entrance/"));
   bindManagedClick(openTrainingJournal, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
@@ -1261,18 +1089,11 @@ function enhanceLanding(doc) {
   }
 
   bindManagedClick(login, () => navigateTo("/nexus/login-aegisalign/"));
-  bindManagedClick(getStarted, () => navigateTo("/nexus/signup-aegisalign/"));
-  bindManagedClick(deployNow, () => {
-    patchState({
-      upgradeInterest: true,
-      lastRoute: "aegisalign-landing-page",
-      lastSeenAt: new Date().toISOString(),
-    });
-    navigateTo("/nexus/aegisalign-pricing-plans/");
-  });
+  retireControl(getStarted);
+  retireControl(deployNow);
   bindManagedClick(watchDemo, () => navigateTo("/nexus/aegis-protocol-dashboard/"));
-  bindManagedClick(getStartedFree, () => navigateTo("/nexus/signup-aegisalign/"));
-  bindManagedClick(talkToSales, () => navigateTo("/nexus/aegisalign-pricing-plans/"));
+  retireControl(getStartedFree);
+  retireControl(talkToSales);
   bindManagedClick(protocolLink, () => navigateTo("/nexus/aegis-protocol-features/"));
   bindManagedClick(docsLink, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(enterDemo, () => navigateTo("/nexus/aegis-protocol-dashboard/"));
@@ -1292,7 +1113,7 @@ function enhanceLanding(doc) {
             ? "/agent-workshop/agentic-workshop-entrance/"
             : text.includes("lived auditability")
               ? "/agent-workshop/active-agents-monitor-agentic-workshop/"
-              : "/nexus/aegisalign-pricing-plans/";
+              : "/nexus/aegis-governance-hub/";
     card.style.cursor = "pointer";
     bindManagedClick(card, () => {
       patchState({
@@ -1399,14 +1220,12 @@ function enhanceLoginSuccess(doc) {
 const pageEnhancers = {
   "aegisalign-landing-page": enhanceLanding,
   "login-aegisalign": enhanceLogin,
-  "signup-aegisalign": enhanceSignup,
   "multi-factor-authentication": enhanceMfa,
   "login-success-transition": enhanceLoginSuccess,
   "aegis-protocol-dashboard": enhanceDashboard,
   "aegis-protocol-documentation-portal": enhanceDocs,
   "aegisalign-settings": enhanceSettings,
   "aegis-peer-profile": enhancePeerProfile,
-  "aegisalign-pricing-plans": enhancePricing,
   "aegis-governance-hub": enhanceGovernanceHub,
   "aegis-protocol-features": enhanceProtocolFeatures,
 };

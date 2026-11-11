@@ -408,7 +408,7 @@ function enhanceRecruitmentHub(doc) {
   bindManagedClick(protocol, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(governance, () => navigateTo("/custodian-ui/decentralized-governance-voting/"));
   bindManagedClick(custodians, () => navigateTo("/custodian-ui/site-custodians/"));
-  bindManagedClick(ecosystem, () => navigateTo("/aegis-application-lab/"));
+  bindManagedClick(ecosystem, () => navigateTo("/"));
   bindManagedClick(custodianLogin, () => navigateTo("/custodian-ui/custodian-login-portal/"));
   bindManagedClick(applyToJoin, () => {
     patchState({ recruitmentIntent: "applicant" });
@@ -817,7 +817,7 @@ function enhancePublishingSurface(doc) {
   bindManagedClick(protocol, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(governance, () => navigateTo("/custodian-ui/decentralized-governance-voting/"));
   bindManagedClick(custodians, () => navigateTo("/custodian-ui/site-custodians/"));
-  bindManagedClick(ecosystem, () => navigateTo("/aegis-application-lab/"));
+  bindManagedClick(ecosystem, () => navigateTo("/"));
 
   bindManagedClick(openPublishingQueue, () => {
     pushAction("open-publishing-queue");
@@ -1326,7 +1326,7 @@ function enhanceSiteCustodians(doc) {
 
   bindManagedClick(protocol, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(governance, () => navigateTo("/custodian-ui/decentralized-governance-voting/"));
-  bindManagedClick(ecosystem, () => navigateTo("/aegis-application-lab/"));
+  bindManagedClick(ecosystem, () => navigateTo("/"));
   bindManagedClick(architecture, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(sdks, () => navigateTo("/developer-depot/api-reference-aegis-protocol/"));
   bindManagedClick(discord, () => navigateTo("/peer-profile/home/"));
@@ -1392,7 +1392,7 @@ function enhanceHubGallery(doc) {
   bindManagedClick(protocol, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(governance, () => navigateTo("/custodian-ui/decentralized-governance-voting/"));
   bindManagedClick(custodians, () => navigateTo("/custodian-ui/site-custodians/"));
-  bindManagedClick(ecosystem, () => navigateTo("/aegis-application-lab/"));
+  bindManagedClick(ecosystem, () => navigateTo("/"));
   bindManagedClick(launchApp, () => navigateTo("/custodian-ui/secure/"));
   bindManagedClick(custodianLogin, () => navigateTo("/custodian-ui/custodian-login-portal/"));
   bindManagedClick(applyToJoin, () => navigateTo("/custodian-ui/site-custodian-login-recruitment-hub/"));

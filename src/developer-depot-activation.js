@@ -1761,7 +1761,7 @@ function enhanceWeb3Portal(doc) {
     proposalCards.forEach((card) => card?.classList.toggle("aegis-highlight-ring", normalizeText(card.textContent).includes(normalizeText(state.web3.delegatedProposal))));
   };
 
-  bindManagedClick(navEcosystem, () => navigateTo("/aegis-application-lab/"));
+  bindManagedClick(navEcosystem, () => navigateTo("/"));
   bindManagedClick(navProtocol, () => navigateTo("/nexus/aegis-protocol-documentation-portal/"));
   bindManagedClick(navGovernance, () => navigateTo("/custodian-ui/decentralized-governance-voting/"));
   bindManagedClick(navStitch, () => navigateTo("/developer-depot/developer-hub-depot/"));

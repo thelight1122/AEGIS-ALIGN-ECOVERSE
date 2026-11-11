@@ -96,7 +96,6 @@ function generateShell() {
             <a href="/">Nexus</a>
             <a href="/developer-depot/">Developer Depot</a>
             <a href="/custodian-ops-center/home/" class="active">Custodian Ops Center</a>
-            <a href="/aegis-application-lab/home/">Application Lab</a>
             <a href="/agent-workshop/">Agentic Workshop</a>
           </nav>
         </div>

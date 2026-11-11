@@ -134,7 +134,6 @@ const STARTER_CATALOG = [
     bullets: ["Webhook setup", "Authentication flow", "Environment variables"],
     actions: [
       { id: "starter", label: "Review Setup", href: "/nexus/aegis-protocol-documentation-portal/" },
-      { id: "upgrade", label: "Full System", href: "/nexus/aegisalign-pricing-plans/" },
     ],
   },
   {
@@ -144,7 +143,6 @@ const STARTER_CATALOG = [
     body: "The hosted path into premium AEGIS tools, governed access, and future modules like Developer Connect.",
     bullets: ["Hosted modules", "Profile access", "Premium toolchain"],
     actions: [
-      { id: "upgrade", label: "Unlock Full System", href: "/nexus/aegisalign-pricing-plans/" },
       { id: "auth", label: "Sign In", href: "/nexus/login-aegisalign/" },
     ],
   },
@@ -211,7 +209,6 @@ function buttonLabelSet(slug, state) {
       actions: [
         { id: "starter", label: "Queue Starter Kit", href: "/nexus/aegis-protocol-documentation-portal/" },
         { id: "demo", label: "Open Demo Surface", href: "/nexus/aegis-protocol-dashboard/" },
-        { id: "upgrade", label: "View Full System", href: "/nexus/aegisalign-pricing-plans/" },
       ]
     };
   }
@@ -222,18 +219,6 @@ function buttonLabelSet(slug, state) {
       actions: [
         { id: "demo", label: "Refresh Demo Loop", href: "/nexus/aegis-protocol-dashboard/" },
         { id: "starter", label: "Claim Starter Kit", href: "/nexus/aegis-protocol-documentation-portal/" },
-        { id: "upgrade", label: "Open Upgrade Path", href: "/nexus/aegisalign-pricing-plans/" },
-      ]
-    };
-  }
-
-  if (slug === "aegisalign-pricing-plans") {
-    return {
-      lead: "Choose how this Peer enters the EcoVerse.",
-      actions: [
-        { id: "upgrade", label: "Activate Subscriber", href: "/nexus/aegisalign-settings/" },
-        { id: "demo", label: "Open Live Demo", href: "/nexus/aegis-protocol-dashboard/" },
-        { id: "starter", label: "Queue Starter Kit", href: "/nexus/aegis-protocol-documentation-portal/" },
       ]
     };
   }
@@ -244,7 +229,6 @@ function buttonLabelSet(slug, state) {
       actions: [
         { id: "auth", label: "Open Access Flow", href: "/nexus/login-aegisalign/" },
         { id: "starter", label: "Starter Systems", href: "/nexus/aegis-protocol-documentation-portal/" },
-        { id: "upgrade", label: "Subscriber Path", href: "/nexus/aegisalign-pricing-plans/" },
       ]
     };
   }
@@ -260,11 +244,11 @@ function buttonLabelSet(slug, state) {
     };
   }
 
-  if (!state.signedIn && (slug === "login-aegisalign" || slug === "signup-aegisalign" || slug === "multi-factor-authentication")) {
+  if (!state.signedIn && (slug === "login-aegisalign" || slug === "multi-factor-authentication")) {
     return {
       lead: "Bring the access flow, demo layer, and starter path together.",
       actions: [
-        { id: "auth", label: "Continue Access", href: slug === "signup-aegisalign" ? "/nexus/multi-factor-authentication/" : "/nexus/login-aegisalign/" },
+        { id: "auth", label: "Continue Access", href: "/nexus/login-aegisalign/" },
         { id: "demo", label: "Open Live Demo", href: "/nexus/aegis-protocol-dashboard/" },
         { id: "starter", label: "Review Starter Kit", href: "/nexus/aegis-protocol-documentation-portal/" },
       ]
@@ -276,7 +260,6 @@ function buttonLabelSet(slug, state) {
     actions: [
       { id: "demo", label: "Try Live Demo", href: "/nexus/aegis-protocol-dashboard/" },
       { id: "starter", label: "Download Starter", href: "/nexus/aegis-protocol-documentation-portal/" },
-      { id: "upgrade", label: state.subscription === "Subscriber" ? "Open Subscriber Tools" : "Unlock Full System", href: state.subscription === "Subscriber" ? "/nexus/aegisalign-settings/" : "/nexus/aegisalign-pricing-plans/" },
     ]
   };
 }

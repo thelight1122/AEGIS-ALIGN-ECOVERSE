@@ -20,14 +20,32 @@ const navigationHierarchyPath = path.join(repoRoot, "config", "navigation-hierar
 const nexusDomain = { source: "Landing_Pages", slug: "nexus", label: "Nexus" };
 
 const domains = [
-  { source: "Developer_Depot", slug: "developer-depot", label: "Developer Depot" },
-  { source: "Custodian_UI", slug: "custodian-ui", label: "Custodian Ops Center" },
-  { source: "AEGIS_Application_Lab", slug: "aegis-application-lab", label: "AEGIS Application Lab" },
   { source: "Agent_Workshop", slug: "agent-workshop", label: "All Minds Academy" },
+  { source: "Custodian_UI", slug: "custodian-ui", label: "Custodian Ops Center" },
+  { source: "Developer_Depot", slug: "developer-depot", label: "Developer Depot" },
 ];
 
 const excludedSourceSlugsByDomain = {
   "custodian-ui": new Set(["custodian-cockpit-hud-2", "aegis-protocol-dashboard"]),
+  // Bounded local environment: the public subscription funnel is not part of this site.
+  "nexus": new Set(["aegisalign-pricing-plans", "signup-aegisalign"]),
+  // Academy pages with nothing real behind them: the invented Squad-creation wizard, two
+  // retired stubs, and five review pages whose only action the Monitor already offers.
+  "agent-workshop": new Set([
+    "create-new-agent-flow",
+    "create-new-agent-identity-configuration",
+    "create-new-agent-logic-intelligence",
+    "create-new-agent-memory-rag",
+    "create-new-agent-dataquad-memory-configuration",
+    "dataquad-agent-deployment",
+    "bulk-export-progress-modal",
+    "sssp-respawn-archive-2",
+    "ai-audit-analysis-recursive-training",
+    "anomaly-analysis-detail",
+    "global-anomaly-heatmap",
+    "recursive-logic-debugger-agentic-workshop",
+    "recursive-training-progress-report",
+  ]),
 };
 
 function escapeHtml(value) {
@@ -513,15 +531,6 @@ function profileHubTemplate() {
           <span class="governance-pill">Cross-section continuity</span>
         </div>
       </article>
-      <article class="profile-hub-card">
-        <p class="governance-kicker">Subscriber Path</p>
-        <h3>Upgrade into the full workspace</h3>
-        <p>The Profile surface is the natural handoff into premium utilities, hosted workspaces, future application unlocks, and Developer Connect access.</p>
-        <div class="profile-hub-action-row">
-          <a class="nexus-action-btn nexus-action-upgrade" href="/nexus/aegisalign-pricing-plans/">View Plans</a>
-          <a class="nexus-action-btn" href="/nexus/aegis-protocol-dashboard/">Open Demo</a>
-        </div>
-      </article>
     </section>
     <section class="profile-hub-grid profile-hub-grid-secondary">
       <article class="profile-hub-panel">
@@ -537,10 +546,6 @@ function profileHubTemplate() {
           <a class="profile-hub-link" href="/nexus/aegis-protocol-documentation-portal/">
             <strong>Starter Systems</strong>
             <span>Download-ready docs and starter system handoff surfaces.</span>
-          </a>
-          <a class="profile-hub-link" href="/nexus/aegisalign-pricing-plans/">
-            <strong>Subscriber Upgrade</strong>
-            <span>Unlock the full system, premium tools, and future workspace modules.</span>
           </a>
         </div>
       </article>
@@ -1567,10 +1572,6 @@ function rootIndexTemplate(_hubs, _pages) {
         isolation: isolate;
       }
 
-      @keyframes twinkle {
-        0%, 100% { opacity: var(--star-o); }
-        50%       { opacity: calc(var(--star-o) * 2.5); }
-      }
       @keyframes ring-drift {
         from { transform: translate(-50%,-50%) rotate(0deg); }
         to   { transform: translate(-50%,-50%) rotate(360deg); }
@@ -1700,19 +1701,19 @@ function rootIndexTemplate(_hubs, _pages) {
         letter-spacing: 0.18em;
         text-transform: uppercase;
       }
-      .sign-custodian {
+      .sign-academy {
         left: clamp(18px, 6vw, 82px);
         top: clamp(82px, 14vh, 138px);
         --sign-tilt: -2.5deg;
         --arrow-angle: 18deg;
-        --sign-glow: rgba(110,241,208,0.18);
+        --sign-glow: rgba(89,176,255,0.2);
       }
-      .sign-lab {
+      .sign-custodian {
         right: clamp(18px, 7vw, 96px);
         top: clamp(112px, 20vh, 196px);
         --sign-tilt: 2deg;
         --arrow-angle: 156deg;
-        --sign-glow: rgba(127,102,255,0.2);
+        --sign-glow: rgba(110,241,208,0.18);
       }
       .sign-depot {
         left: clamp(20px, 9vw, 132px);
@@ -1720,13 +1721,6 @@ function rootIndexTemplate(_hubs, _pages) {
         --sign-tilt: 1.8deg;
         --arrow-angle: -22deg;
         --sign-glow: rgba(255,181,107,0.2);
-      }
-      .sign-academy {
-        right: clamp(22px, 8vw, 124px);
-        bottom: clamp(54px, 10vh, 112px);
-        --sign-tilt: -1.8deg;
-        --arrow-angle: 202deg;
-        --sign-glow: rgba(89,176,255,0.2);
       }
 
       #landing-content {
@@ -1958,10 +1952,9 @@ function rootIndexTemplate(_hubs, _pages) {
           margin-top: 7px;
           font-size: 0.54rem;
         }
-        .sign-custodian { left: 12px; top: 62px; }
-        .sign-lab { right: 12px; top: 86px; }
+        .sign-academy { left: 12px; top: 62px; }
+        .sign-custodian { right: 12px; top: 86px; }
         .sign-depot { left: 12px; bottom: 20px; }
-        .sign-academy { right: 12px; bottom: 20px; }
         .landing-footer-meta {
           display: none;
         }
@@ -1982,16 +1975,7 @@ function rootIndexTemplate(_hubs, _pages) {
   </head>
   <body class="ecoverse-landing immersive-root">
 
-    <svg aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1;">
-      <defs>
-        <radialGradient id="star-void-fade" cx="50%" cy="47%" r="32%">
-          <stop offset="0%"   stop-color="#010205" stop-opacity="0.72" />
-          <stop offset="100%" stop-color="#010205" stop-opacity="0" />
-        </radialGradient>
-      </defs>
-      <g id="stars"></g>
-      <ellipse cx="50%" cy="47%" rx="20%" ry="26%" fill="url(#star-void-fade)" />
-    </svg>
+    <canvas id="aether-canvas" aria-hidden="true"></canvas>
 
     <div class="void-ring" style="width:74vmax;height:74vmax;border:1px solid rgba(79,163,255,0.038);animation:ring-drift 64s linear infinite;"></div>
     <div class="void-ring" style="width:96vmax;height:96vmax;border:1px solid rgba(110,241,208,0.025);animation:ring-drift-rev 92s linear infinite;"></div>
@@ -2000,29 +1984,23 @@ function rootIndexTemplate(_hubs, _pages) {
     <div aria-hidden="true" style="position:fixed;top:50%;left:50%;width:640px;height:380px;transform:translate(-50%,-55%);background:radial-gradient(ellipse,rgba(79,163,255,0.028) 0%,transparent 66%);pointer-events:none;z-index:1;"></div>
 
     <nav class="section-constellations" aria-label="EcoVerse sections">
+      <a class="section-signpost sign-academy" href="/agent-workshop/">
+        <span class="signpost-arrow" aria-hidden="true">➜</span>
+        <strong>All Minds Academy</strong>
+        <span>Responsible SI bond formation for BioPeer / CyberPeer Squads, Build Masters, and the living EcoVerse.</span>
+        <small>13 mapped pages</small>
+      </a>
       <a class="section-signpost sign-custodian" href="/custodian-ui/">
         <span class="signpost-arrow" aria-hidden="true">➜</span>
         <strong>Custodian Ops Center</strong>
         <span>Operational guidance, mission governance, health monitoring, and recovery workflows.</span>
         <small>18 mapped pages</small>
       </a>
-      <a class="section-signpost sign-lab" href="/aegis-application-lab/">
-        <span class="signpost-arrow" aria-hidden="true">➜</span>
-        <strong>AEGIS Application Lab</strong>
-        <span>Interactive demos and productized AEGIS application experiences.</span>
-        <small>8 mapped pages</small>
-      </a>
       <a class="section-signpost sign-depot" href="/developer-depot/">
         <span class="signpost-arrow" aria-hidden="true">➜</span>
         <strong>Developers Depot</strong>
         <span>Developer docs, API exploration, and community build workflows.</span>
         <small>15 mapped pages</small>
-      </a>
-      <a class="section-signpost sign-academy" href="/agent-workshop/">
-        <span class="signpost-arrow" aria-hidden="true">➜</span>
-        <strong>All Minds Academy</strong>
-        <span>Responsible SI bond formation for BioPeer / CyberPeer Squads, Build Masters, and the living EcoVerse.</span>
-        <small>26 mapped pages</small>
       </a>
     </nav>
 
@@ -2071,25 +2049,9 @@ function rootIndexTemplate(_hubs, _pages) {
 
     <div id="portal-flare" aria-hidden="true"></div>
 
+    <script type="module" src="/src/aether-field.js"></script>
     <script type="module" src="/src/portal-transit.js"></script>
     <script type="module">
-      const g = document.getElementById('stars');
-      for (let i = 0; i < 130; i++) {
-        const x = (i * 137.508) % 100;
-        const y = (i * 83.17) % 100;
-        const r = 0.4 + (i % 4) * 0.35;
-        const o = 0.1 + (i % 8) * 0.07;
-        const dur = 2.4 + (i % 5) * 0.88;
-        const del = (i % 7) * 0.4;
-        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        c.setAttribute('cx', x + '%');
-        c.setAttribute('cy', y + '%');
-        c.setAttribute('r', String(r));
-        c.setAttribute('fill', 'white');
-        c.style.cssText = '--star-o:' + o + ';opacity:' + o + ';animation:twinkle ' + dur + 's ' + del + 's ease-in-out infinite';
-        g.appendChild(c);
-      }
-
       let entering = false;
       const btn = document.getElementById('enter-btn');
       const content = document.getElementById('landing-content');
@@ -2250,6 +2212,9 @@ if (fs.existsSync(nexusSourceDir)) {
     const relSegments = relDir.split(path.sep).filter(Boolean);
     const sourceSlug = slugify(relSegments.join("-"));
     if (!sourceSlug) {
+      continue;
+    }
+    if (excludedSourceSlugsByDomain[nexusDomain.slug]?.has(sourceSlug)) {
       continue;
     }
 

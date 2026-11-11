@@ -1,6 +1,7 @@
 import { CORE_ENGINE, getCoreAgentManifest } from "./agent-core-engine.js";
 import {
   BETA_PEER_DISPLAY_NAME,
+  fetchBetaPeerChamberWitnesses,
   fetchBetaPeerRuntime,
 } from "./peer-runtime-store.js";
 
@@ -338,28 +339,6 @@ async function injectAdamOneOrientationCue(doc, anchor, options = {}) {
   }
 }
 
-function syncCreationPreview(doc, slug) {
-  const previewBlocks = Array.from(doc.querySelectorAll("pre"));
-  previewBlocks.forEach((block) => {
-    const raw = block.textContent || "";
-    if (!raw.trim()) return;
-    let next = raw;
-    next = next.replace(/version:\s*["']?[^\n"']+["']?/gi, `version: "${CORE_ENGINE.displayVersion}"`);
-    next = next.replace(/base_model:\s*["']?[^\n"']+["']?/gi, `base_model: "${CORE_ENGINE.creationDefaults.logic.baseModel}"`);
-    next = next.replace(/model_id:\s*["']?[^\n"']+["']?/gi, `model_id: "${CORE_ENGINE.creationDefaults.logic.baseModel}"`);
-    next = next.replace(/strategy:\s*[^\n]+/gi, `strategy: ${CORE_ENGINE.creationDefaults.logic.reflectionPrimitive}`);
-    next = next.replace(/snapshot_protocol:\s*[^\n]+/gi, `snapshot_protocol: ${CORE_ENGINE.creationDefaults.memory.snapshotProtocol}`);
-    next = next.replace(/lock_canon:\s*[^\n]+/gi, "lock_core_engine: true");
-    next = next.replace(/readiness:\s*[^\n]+/gi, `readiness: ${CORE_ENGINE.creationDefaults.deployment.state}`);
-    if (slug === "create-new-agent-dataquad-memory-configuration") {
-      next = next.replace(/integration:\n([\s\S]*?)governance:/i, `integration:\n    strategy: ${CORE_ENGINE.creationDefaults.logic.reflectionPrimitive}\n    offload_domain: ".digitalself"\ngovernance:`);
-    }
-    if (next !== raw) {
-      block.textContent = next;
-    }
-  });
-}
-
 function wireRouteByText(doc, labelsToRoute) {
   const interactive = Array.from(doc.querySelectorAll("button, a"));
   interactive.forEach((node) => {
@@ -371,36 +350,6 @@ function wireRouteByText(doc, labelsToRoute) {
       navigateTo(entry.route);
     });
   });
-}
-
-function retitleWorkshopChrome(doc) {
-  const candidates = Array.from(doc.querySelectorAll("footer, p, span, div"));
-  candidates.forEach((node) => {
-    const text = normalizeText(node.textContent);
-    if (text === "v0.8.4-beta") {
-      node.textContent = CORE_ENGINE.displayVersion;
-    } else if (text === "neural engine active") {
-      node.textContent = `${CORE_ENGINE.name} bound`;
-    } else if (text.includes("aegis standards applied automatically")) {
-      node.textContent = `${CORE_ENGINE.name} bindings applied automatically`;
-    } else if (text.includes("configuration automatically saved")) {
-      node.textContent = `Draft agent bound to ${CORE_ENGINE.displayVersion}`;
-    }
-  });
-}
-
-function enhanceCreationSurface(doc, slug, options) {
-  const enhancedFlag = `aegisEnhanced${slug}`;
-  if (doc.body.dataset[enhancedFlag] === "true") return;
-  doc.body.dataset[enhancedFlag] = "true";
-  injectStyles(doc);
-  ensureDraftAgentState();
-
-  const headerAnchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(doc, headerAnchor, options.detail);
-  syncCreationPreview(doc, slug);
-  retitleWorkshopChrome(doc);
-  wireRouteByText(doc, options.routes);
 }
 
 function enhanceMainConsole(doc) {
@@ -456,7 +405,7 @@ function enhanceMainConsole(doc) {
 
   bindManagedClick(resume, () => {
     const state = readState();
-    const target = state.lastLaunchRoute || "/agent-workshop/create-new-agent-flow/";
+    const target = state.lastLaunchRoute || "/agent-workshop/aegis-holochamber-academy/";
     showToast(doc, `Resuming ${routeLabel(target)}.`);
     navigateTo(target);
   });
@@ -722,58 +671,6 @@ function enhanceCommunicationProtocol(doc) {
       ];
       ledger.innerHTML = items.map((item) => `<div>${item}</div>`).join("");
     }
-  });
-}
-
-function enhanceCreateNewAgentFlow(doc) {
-  enhanceCreationSurface(doc, "create-new-agent-flow", {
-    detail: `New agents created from this flow are now bound to ${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion}. When the canon-locked Core repository changes, this flow should inherit the synchronized defaults automatically.`,
-    routes: [
-      { text: "next step", route: "/agent-workshop/create-new-agent-identity-configuration/" },
-      { text: "cancel", route: "/agent-workshop/agentic-workshop-main-console/", toast: "Returning to the Workshop Main Console." },
-    ],
-  });
-}
-
-function enhanceCreateIdentity(doc) {
-  enhanceCreationSurface(doc, "create-new-agent-identity-configuration", {
-    detail: `Identity settings are being framed under ${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion}, with stewardship-first boundaries and peer-aware defaults.`,
-    routes: [
-      { text: "next: logic configuration", route: "/agent-workshop/create-new-agent-logic-intelligence/" },
-      { text: "cancel", route: "/agent-workshop/agentic-workshop-main-console/" },
-    ],
-  });
-}
-
-function enhanceCreateLogic(doc) {
-  enhanceCreationSurface(doc, "create-new-agent-logic-intelligence", {
-    detail: `Logic and tool access are now interpreted as ${CORE_ENGINE.name} bindings. This keeps the Workshop aligned when the shared engine changes later.`,
-    routes: [
-      { text: "next: memory", route: "/agent-workshop/create-new-agent-memory-rag/" },
-      { text: "previous step", route: "/agent-workshop/create-new-agent-identity-configuration/" },
-    ],
-  });
-}
-
-function enhanceCreateMemory(doc) {
-  enhanceCreationSurface(doc, "create-new-agent-memory-rag", {
-    detail: `Memory and RAG surfaces are now treated as derived from the shared Core Engine manifest rather than standalone stitched defaults.`,
-    routes: [
-      { text: "next: deployment", route: "/agent-workshop/create-new-agent-dataquad-memory-configuration/" },
-      { text: "previous step", route: "/agent-workshop/create-new-agent-logic-intelligence/" },
-      { text: "export manifest", route: "/agent-workshop/model-deployment-flow/", toast: "Opening deployment flow with current core-bound draft." },
-    ],
-  });
-}
-
-function enhanceCreateDataQuad(doc) {
-  enhanceCreationSurface(doc, "create-new-agent-dataquad-memory-configuration", {
-    detail: `DataQuad memory and governance settings are now tied to ${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion}, including the current reflection primitive and snapshot protocol defaults.`,
-    routes: [
-      { text: "next: deployment", route: "/agent-workshop/model-deployment-flow/" },
-      { text: "previous step", route: "/agent-workshop/create-new-agent-memory-rag/" },
-      { text: "export manifest", route: "/agent-workshop/model-deployment-flow/", toast: "Opening deployment flow with the bound core manifest." },
-    ],
   });
 }
 
@@ -1180,479 +1077,6 @@ function enhanceDetailedAgentView(doc) {
   hydrateLivePeerRuntime(doc, applyRuntime);
 }
 
-function enhanceAnomalyAnalysisDetail(doc) {
-  if (doc.body.dataset.aegisEnhancedAnomalyDetail === "true") return;
-  doc.body.dataset.aegisEnhancedAnomalyDetail = "true";
-  injectStyles(doc);
-
-  const anchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(
-    doc,
-    anchor,
-    `${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion} keeps this anomaly surface truthful. It uses persisted continuity and browser truth, while backend anomaly scoring remains explicitly pending.`,
-  );
-
-  const setText = (selector, value) => {
-    const node = doc.querySelector(selector);
-    if (node) node.textContent = value;
-  };
-
-  const eventFeed = doc.querySelector("[data-anomaly-events]");
-  const notePanel = doc.querySelector("[data-anomaly-note]");
-  const appendButton = doc.querySelector("[data-anomaly-action='append']");
-  const monitorButton = doc.querySelector("[data-anomaly-route='monitor']");
-  const mapButton = doc.querySelector("[data-anomaly-route='map']");
-
-  bindManagedClick(monitorButton, () => navigateTo("/agent-workshop/active-agents-monitor-agentic-workshop/"));
-  bindManagedClick(mapButton, () => navigateTo("/agent-workshop/aegis-project-tree-index/"));
-  bindManagedClick(appendButton, withButtonLoading(appendButton, "Recording…", async () => {
-    showToast(doc, "Steward is recording a bounded anomaly review note.");
-    try {
-      const { appendBetaPeerTemporalMemory } = await loadWorkshopOperatorControls();
-      await appendBetaPeerTemporalMemory({
-        source: "anomaly_analysis_detail",
-        summary: "Steward reviewed the current Workshop anomaly lane and confirmed that only browser truth and persisted continuity are available at this stage.",
-        details: {
-          taskType: "anomaly_review",
-          origin: "anomaly_detail",
-        },
-      });
-      showToast(doc, "Anomaly review note recorded in Firebase.");
-      await hydrateLivePeerRuntime(doc, applyRuntime);
-    } catch (error) {
-      console.error("[agent-workshop] anomaly review append failed", error);
-      showToast(doc, "Anomaly review note could not be recorded right now.");
-    }
-  }));
-
-  const applyRuntime = (runtime) => {
-    const latestSummary = runtime.peer?.temporalMemory?.latestSummary || runtime.advocate?.continuitySummary || "Awaiting reviewed continuity.";
-    setText("[data-anomaly-connectivity]", navigator.onLine ? "Online" : "Offline");
-    setText("[data-anomaly-continuity]", runtime.peer?.temporalMemory?.continuityMode || runtime.peer?.dataQuadBinding?.continuityStatus || "bootstrap-only");
-    setText("[data-anomaly-review]", runtime.steward?.reviewRequired ? "review required" : "review current");
-    setText("[data-anomaly-summary]", latestSummary);
-
-    if (eventFeed) {
-      const items = (runtime.events || []).slice(0, 5);
-      eventFeed.innerHTML = items.length
-        ? items.map((entry) => `<div>${entry.eventType} · ${entry.summary}</div>`).join("")
-        : "<div>No persisted Workshop events yet.</div>";
-    }
-
-    if (notePanel) {
-      const recentEvent = (runtime.events || []).find((entry) => entry.source === "anomaly_analysis_detail")
-        || runtime.events?.[0];
-      notePanel.textContent = recentEvent
-        ? `Latest anomaly review basis:\n${recentEvent.eventType}\n${recentEvent.summary}`
-        : "No anomaly review note has been recorded yet.";
-    }
-  };
-
-  setText("[data-anomaly-connectivity]", navigator.onLine ? "Online" : "Offline");
-  setText("[data-anomaly-summary]", "Awaiting persisted runtime hydration.");
-  hydrateLivePeerRuntime(doc, applyRuntime);
-}
-
-function enhanceAiAuditAnalysis(doc) {
-  if (doc.body.dataset.aegisEnhancedAiAudit === "true") return;
-  doc.body.dataset.aegisEnhancedAiAudit = "true";
-  injectStyles(doc);
-
-  const anchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(
-    doc,
-    anchor,
-    `${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion} keeps this audit surface honest. It reports Adam-One's persisted continuity, bounded Workshop guidance, and browser truth while backend audit computation remains explicitly pending.`,
-  );
-
-  const setText = (selector, value) => {
-    const node = doc.querySelector(selector);
-    if (node) node.textContent = value;
-  };
-
-  const eventFeed = doc.querySelector("[data-audit-events]");
-  const notePanel = doc.querySelector("[data-audit-note]");
-  const artifactPanel = doc.querySelector("[data-audit-artifact]");
-  const appendButton = doc.querySelector("[data-audit-action='append']");
-  const monitorButton = doc.querySelector("[data-audit-route='monitor']");
-  const detailButton = doc.querySelector("[data-audit-route='detail']");
-  const topologyButton = doc.querySelector("[data-audit-route='topology']");
-  const mainButton = doc.querySelector("[data-audit-route='main']");
-
-  bindManagedClick(monitorButton, () => navigateTo("/agent-workshop/active-agents-monitor-agentic-workshop/"));
-  bindManagedClick(detailButton, () => navigateTo("/agent-workshop/detailed-agent-view-dataquad-node/"));
-  bindManagedClick(topologyButton, () => navigateTo("/agent-workshop/global-anomaly-heatmap/"));
-  bindManagedClick(mainButton, () => navigateTo("/agent-workshop/agentic-workshop-main-console/"));
-  bindManagedClick(appendButton, withButtonLoading(appendButton, "Recording…", async () => {
-    showToast(doc, "Steward is recording a bounded Workshop audit review note.");
-    try {
-      const { appendBetaPeerTemporalMemory } = await loadWorkshopOperatorControls();
-      await appendBetaPeerTemporalMemory({
-        source: "ai_audit_analysis_recursive_training",
-        summary: "Steward reviewed the AI audit lane and confirmed that persisted continuity, current bounded tasks, and browser truth remain the only active audit basis while backend training computation stays pending.",
-        details: {
-          taskType: "ai_audit_review",
-          origin: "ai_audit_analysis",
-        },
-      });
-      showToast(doc, "Audit review note recorded in Firebase.");
-      await hydrateLivePeerRuntime(doc, applyRuntime);
-    } catch (error) {
-      console.error("[agent-workshop] ai audit review append failed", error);
-      showToast(doc, "Audit review note could not be recorded right now.");
-    }
-  }));
-
-  const applyRuntime = (runtime) => {
-    const appendCount = runtime.peer?.temporalMemory?.appendCount ?? 0;
-    const latestSummary = runtime.peer?.temporalMemory?.latestSummary
-      || runtime.advocate?.continuitySummary
-      || "Awaiting reviewed continuity.";
-    const latestTaskTitle = runtime.peer?.currentTask?.title || "No bounded task is active right now.";
-    const latestTaskStatus = runtime.peer?.currentTask?.status || runtime.peer?.lastTaskStatus || "pending";
-    const latestTaskSource = runtime.peer?.currentTask?.source || "workshop runtime";
-    const latestArtifact = (runtime.artifacts || []).find((artifact) => artifact.artifactType === "priority_note" || artifact.title === "Workshop Runtime Priority Note")
-      || runtime.artifacts?.[0];
-    const auditReviewEvent = (runtime.events || []).find((entry) => entry.source === "ai_audit_analysis_recursive_training");
-
-    setText("[data-audit-connectivity]", navigator.onLine ? "Online" : "Offline");
-    setText("[data-audit-continuity]", runtime.peer?.temporalMemory?.continuityMode || runtime.peer?.dataQuadBinding?.continuityStatus || "bootstrap-only");
-    setText("[data-audit-appends]", String(appendCount));
-    setText("[data-audit-review]", runtime.steward?.reviewRequired ? "review required" : "review current");
-    setText("[data-audit-summary]", latestSummary);
-    setText(
-      "[data-audit-task]",
-      `Task: ${latestTaskTitle}\nStatus: ${latestTaskStatus}\nSource: ${latestTaskSource}`,
-    );
-
-    if (eventFeed) {
-      const items = (runtime.events || []).slice(0, 6);
-      eventFeed.innerHTML = items.length
-        ? items.map((entry) => `
-          <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/70">
-            <div class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">${entry.eventType}</div>
-            <div class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">${entry.summary}</div>
-          </div>
-        `).join("")
-        : '<div class="rounded-2xl border border-dashed border-slate-300 px-4 py-3 text-slate-500 dark:border-slate-700 dark:text-slate-400">No persisted Workshop events yet.</div>';
-    }
-
-    if (notePanel) {
-      notePanel.textContent = auditReviewEvent
-        ? `Latest audit review basis:\n${auditReviewEvent.eventType}\n${auditReviewEvent.summary}`
-        : "No audit review note has been recorded yet.";
-    }
-
-    if (artifactPanel) {
-      artifactPanel.textContent = latestArtifact
-        ? `${latestArtifact.title || latestArtifact.artifactType || "Artifact"}\n${latestArtifact.summary || latestArtifact.content || "Persisted bounded artifact available."}`
-        : "Awaiting persisted artifact hydration.";
-    }
-  };
-
-  setText("[data-audit-connectivity]", navigator.onLine ? "Online" : "Offline");
-  setText("[data-audit-summary]", "Awaiting persisted runtime hydration.");
-  hydrateLivePeerRuntime(doc, applyRuntime);
-}
-
-function enhanceRecursiveLogicDebugger(doc) {
-  if (doc.body.dataset.aegisEnhancedLogicDebugger === "true") return;
-  doc.body.dataset.aegisEnhancedLogicDebugger = "true";
-  injectStyles(doc);
-
-  const anchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(
-    doc,
-    anchor,
-    `${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion} keeps this logic review lane honest. It reflects Adam-One's persisted continuity and bounded task state while deeper recursive debugger execution remains backend pending.`,
-  );
-
-  const setText = (selector, value) => {
-    const node = doc.querySelector(selector);
-    if (node) node.textContent = value;
-  };
-
-  const eventFeed = doc.querySelector("[data-logic-events]");
-  const notePanel = doc.querySelector("[data-logic-note]");
-  const artifactPanel = doc.querySelector("[data-logic-artifact]");
-  const appendButton = doc.querySelector("[data-logic-action='append']");
-  const monitorButton = doc.querySelector("[data-logic-route='monitor']");
-  const detailButton = doc.querySelector("[data-logic-route='detail']");
-  const topologyButton = doc.querySelector("[data-logic-route='topology']");
-  const auditButton = doc.querySelector("[data-logic-route='audit']");
-  const mainButton = doc.querySelector("[data-logic-route='main']");
-
-  bindManagedClick(monitorButton, () => navigateTo("/agent-workshop/active-agents-monitor-agentic-workshop/"));
-  bindManagedClick(detailButton, () => navigateTo("/agent-workshop/detailed-agent-view-dataquad-node/"));
-  bindManagedClick(topologyButton, () => navigateTo("/agent-workshop/global-anomaly-heatmap/"));
-  bindManagedClick(auditButton, () => navigateTo("/agent-workshop/ai-audit-analysis-recursive-training/"));
-  bindManagedClick(mainButton, () => navigateTo("/agent-workshop/agentic-workshop-main-console/"));
-  bindManagedClick(appendButton, withButtonLoading(appendButton, "Recording…", async () => {
-    showToast(doc, "Steward is recording a bounded logic review note.");
-    try {
-      const { appendBetaPeerTemporalMemory } = await loadWorkshopOperatorControls();
-      await appendBetaPeerTemporalMemory({
-        source: "recursive_logic_debugger_agentic_workshop",
-        summary: "Steward reviewed the Workshop logic lane and confirmed that persisted continuity and bounded task state remain the only active debugger basis while deeper recursive logic execution stays backend pending.",
-        details: {
-          taskType: "logic_review",
-          origin: "recursive_logic_debugger",
-        },
-      });
-      showToast(doc, "Logic review note recorded in Firebase.");
-      await hydrateLivePeerRuntime(doc, applyRuntime);
-    } catch (error) {
-      console.error("[agent-workshop] logic review append failed", error);
-      showToast(doc, "Logic review note could not be recorded right now.");
-    }
-  }));
-
-  const applyRuntime = (runtime) => {
-    const appendCount = runtime.peer?.temporalMemory?.appendCount ?? 0;
-    const latestSummary = runtime.peer?.temporalMemory?.latestSummary
-      || runtime.advocate?.continuitySummary
-      || "Awaiting reviewed continuity.";
-    const latestTaskTitle = runtime.peer?.currentTask?.title || "No bounded task is active right now.";
-    const latestTaskStatus = runtime.peer?.currentTask?.status || runtime.peer?.lastTaskStatus || "pending";
-    const latestTaskSource = runtime.peer?.currentTask?.source || "workshop runtime";
-    const latestArtifact = (runtime.artifacts || []).find((artifact) => artifact.title === "Workshop Runtime Priority Note" || artifact.artifactType === "priority_note")
-      || runtime.artifacts?.[0];
-    const logicEvent = (runtime.events || []).find((entry) => entry.source === "recursive_logic_debugger_agentic_workshop");
-
-    setText("[data-logic-connectivity]", navigator.onLine ? "Online" : "Offline");
-    setText("[data-logic-continuity]", runtime.peer?.temporalMemory?.continuityMode || runtime.peer?.dataQuadBinding?.continuityStatus || "bootstrap-only");
-    setText("[data-logic-appends]", String(appendCount));
-    setText("[data-logic-review]", runtime.steward?.reviewRequired ? "review required" : "review current");
-    setText("[data-logic-summary]", latestSummary);
-    setText(
-      "[data-logic-task]",
-      `Task: ${latestTaskTitle}\nStatus: ${latestTaskStatus}\nSource: ${latestTaskSource}`,
-    );
-
-    if (eventFeed) {
-      const items = (runtime.events || []).slice(0, 6);
-      eventFeed.innerHTML = items.length
-        ? items.map((entry) => `
-          <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/70">
-            <div class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">${entry.eventType}</div>
-            <div class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">${entry.summary}</div>
-          </div>
-        `).join("")
-        : '<div class="rounded-2xl border border-dashed border-slate-300 px-4 py-3 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">No persisted Workshop events yet.</div>';
-    }
-
-    if (notePanel) {
-      notePanel.textContent = logicEvent
-        ? `Latest logic review basis:\n${logicEvent.eventType}\n${logicEvent.summary}`
-        : "No logic review note has been recorded yet.";
-    }
-
-    if (artifactPanel) {
-      artifactPanel.textContent = latestArtifact
-        ? `${latestArtifact.title || latestArtifact.artifactType || "Artifact"}\n${latestArtifact.summary || latestArtifact.content || "Persisted bounded artifact available."}`
-        : "Awaiting persisted artifact hydration.";
-    }
-  };
-
-  setText("[data-logic-connectivity]", navigator.onLine ? "Online" : "Offline");
-  setText("[data-logic-summary]", "Awaiting persisted runtime hydration.");
-  hydrateLivePeerRuntime(doc, applyRuntime);
-}
-
-function enhanceRecursiveTrainingProgress(doc) {
-  if (doc.body.dataset.aegisEnhancedTrainingProgress === "true") return;
-  doc.body.dataset.aegisEnhancedTrainingProgress = "true";
-  injectStyles(doc);
-
-  const anchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(
-    doc,
-    anchor,
-    `${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion} keeps this progress lane truthful. It reports only persisted continuity, bounded reviewed actions, and real artifacts while training computation remains backend pending.`,
-  );
-
-  const setText = (selector, value) => {
-    const node = doc.querySelector(selector);
-    if (node) node.textContent = value;
-  };
-
-  const eventFeed = doc.querySelector("[data-progress-events]");
-  const notePanel = doc.querySelector("[data-progress-note]");
-  const artifactPanel = doc.querySelector("[data-progress-artifact]");
-  const appendButton = doc.querySelector("[data-progress-action='append']");
-  const monitorButton = doc.querySelector("[data-progress-route='monitor']");
-  const detailButton = doc.querySelector("[data-progress-route='detail']");
-  const auditButton = doc.querySelector("[data-progress-route='audit']");
-  const mainButton = doc.querySelector("[data-progress-route='main']");
-
-  bindManagedClick(monitorButton, () => navigateTo("/agent-workshop/active-agents-monitor-agentic-workshop/"));
-  bindManagedClick(detailButton, () => navigateTo("/agent-workshop/detailed-agent-view-dataquad-node/"));
-  bindManagedClick(auditButton, () => navigateTo("/agent-workshop/ai-audit-analysis-recursive-training/"));
-  bindManagedClick(mainButton, () => navigateTo("/agent-workshop/agentic-workshop-main-console/"));
-  bindManagedClick(appendButton, withButtonLoading(appendButton, "Recording…", async () => {
-    showToast(doc, "Steward is recording a bounded progress review note.");
-    try {
-      const { appendBetaPeerTemporalMemory } = await loadWorkshopOperatorControls();
-      await appendBetaPeerTemporalMemory({
-        source: "recursive_training_progress_report",
-        summary: "Steward reviewed the Workshop progress lane and confirmed that progress is currently expressed through persisted continuity, reviewed actions, and bounded artifacts while deeper training analytics remain backend pending.",
-        details: {
-          taskType: "progress_review",
-          origin: "recursive_training_progress",
-        },
-      });
-      showToast(doc, "Progress review note recorded in Firebase.");
-      await hydrateLivePeerRuntime(doc, applyRuntime);
-    } catch (error) {
-      console.error("[agent-workshop] progress review append failed", error);
-      showToast(doc, "Progress review note could not be recorded right now.");
-    }
-  }));
-
-  const applyRuntime = (runtime) => {
-    const appendCount = runtime.peer?.temporalMemory?.appendCount ?? 0;
-    const latestSummary = runtime.peer?.temporalMemory?.latestSummary
-      || runtime.advocate?.continuitySummary
-      || "Awaiting reviewed continuity.";
-    const latestTaskTitle = runtime.peer?.currentTask?.title || "No bounded task is active right now.";
-    const latestTaskStatus = runtime.peer?.currentTask?.status || runtime.peer?.lastTaskStatus || "pending";
-    const latestTaskSource = runtime.peer?.currentTask?.source || "workshop runtime";
-    const latestArtifact = (runtime.artifacts || []).find((artifact) => artifact.title === "Workshop Runtime Priority Note" || artifact.artifactType === "priority_note")
-      || runtime.artifacts?.[0];
-    const progressEvent = (runtime.events || []).find((entry) => entry.source === "recursive_training_progress_report");
-
-    setText("[data-progress-connectivity]", navigator.onLine ? "Online" : "Offline");
-    setText("[data-progress-continuity]", runtime.peer?.temporalMemory?.continuityMode || runtime.peer?.dataQuadBinding?.continuityStatus || "bootstrap-only");
-    setText("[data-progress-appends]", String(appendCount));
-    setText("[data-progress-events-count]", String((runtime.events || []).length));
-    setText("[data-progress-summary]", latestSummary);
-    setText(
-      "[data-progress-task]",
-      `Task: ${latestTaskTitle}\nStatus: ${latestTaskStatus}\nSource: ${latestTaskSource}`,
-    );
-
-    if (eventFeed) {
-      const items = (runtime.events || []).slice(0, 6);
-      eventFeed.innerHTML = items.length
-        ? items.map((entry) => `
-          <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/70">
-            <div class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">${entry.eventType}</div>
-            <div class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">${entry.summary}</div>
-          </div>
-        `).join("")
-        : '<div class="rounded-2xl border border-dashed border-slate-300 px-4 py-3 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">No persisted Workshop events yet.</div>';
-    }
-
-    if (notePanel) {
-      notePanel.textContent = progressEvent
-        ? `Latest progress review basis:\n${progressEvent.eventType}\n${progressEvent.summary}`
-        : "No progress review note has been recorded yet.";
-    }
-
-    if (artifactPanel) {
-      artifactPanel.textContent = latestArtifact
-        ? `${latestArtifact.title || latestArtifact.artifactType || "Artifact"}\n${latestArtifact.summary || latestArtifact.content || "Persisted bounded artifact available."}`
-        : "Awaiting persisted artifact hydration.";
-    }
-  };
-
-  setText("[data-progress-connectivity]", navigator.onLine ? "Online" : "Offline");
-  setText("[data-progress-summary]", "Awaiting persisted runtime hydration.");
-  hydrateLivePeerRuntime(doc, applyRuntime);
-}
-
-function enhanceGlobalAnomalyHeatmap(doc) {
-  if (doc.body.dataset.aegisEnhancedGlobalHeatmap === "true") return;
-  doc.body.dataset.aegisEnhancedGlobalHeatmap = "true";
-  injectStyles(doc);
-
-  const anchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(
-    doc,
-    anchor,
-    `${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion} keeps this topology surface bounded. Global anomaly maps remain backend pending, so this page shows only the Workshop truth we can actually observe.`,
-  );
-
-  const setText = (selector, value) => {
-    const node = doc.querySelector(selector);
-    if (node) node.textContent = value;
-  };
-
-  const eventFeed = doc.querySelector("[data-heatmap-events]");
-  const notePanel = doc.querySelector("[data-heatmap-note]");
-  const appendButton = doc.querySelector("[data-heatmap-action='append']");
-  const monitorButton = doc.querySelector("[data-heatmap-route='monitor']");
-  const detailButton = doc.querySelector("[data-heatmap-route='detail']");
-
-  bindManagedClick(monitorButton, () => navigateTo("/agent-workshop/active-agents-monitor-agentic-workshop/"));
-  bindManagedClick(detailButton, () => navigateTo("/agent-workshop/anomaly-analysis-detail/"));
-  bindManagedClick(appendButton, withButtonLoading(appendButton, "Recording…", async () => {
-    showToast(doc, "Steward is recording a bounded topology status note.");
-    try {
-      const { appendBetaPeerTemporalMemory } = await loadWorkshopOperatorControls();
-      await appendBetaPeerTemporalMemory({
-        source: "global_anomaly_heatmap",
-        summary: "Steward reviewed the topology status lane and confirmed that global anomaly telemetry is still backend pending while local Workshop truth remains available.",
-        details: {
-          taskType: "topology_review",
-          origin: "global_heatmap",
-        },
-      });
-      showToast(doc, "Topology status note recorded in Firebase.");
-      await hydrateLivePeerRuntime(doc, applyRuntime);
-    } catch (error) {
-      console.error("[agent-workshop] topology status append failed", error);
-      showToast(doc, "Topology status note could not be recorded right now.");
-    }
-  }));
-
-  const applyRuntime = (runtime) => {
-    const latestSummary = runtime.peer?.temporalMemory?.latestSummary || runtime.advocate?.continuitySummary || "Awaiting reviewed continuity.";
-    setText("[data-heatmap-connectivity]", navigator.onLine ? "Online" : "Offline");
-    setText("[data-heatmap-mode]", runtime.peer?.temporalMemory?.continuityMode || runtime.peer?.dataQuadBinding?.continuityStatus || "bootstrap-only");
-    setText("[data-heatmap-global]", "backend pending");
-    setText("[data-heatmap-summary]", latestSummary);
-
-    if (eventFeed) {
-      const items = (runtime.events || []).slice(0, 5);
-      eventFeed.innerHTML = items.length
-        ? items.map((entry) => `<div>${entry.eventType} · ${entry.summary}</div>`).join("")
-        : "<div>No persisted topology review events yet.</div>";
-    }
-
-    if (notePanel) {
-      const recentEvent = (runtime.events || []).find((entry) => entry.source === "global_anomaly_heatmap")
-        || runtime.events?.[0];
-      notePanel.textContent = recentEvent
-        ? `Latest topology status basis:\n${recentEvent.eventType}\n${recentEvent.summary}`
-        : "No topology note has been recorded yet.";
-    }
-  };
-
-  setText("[data-heatmap-connectivity]", navigator.onLine ? "Online" : "Offline");
-  setText("[data-heatmap-summary]", "Awaiting persisted runtime hydration.");
-  hydrateLivePeerRuntime(doc, applyRuntime);
-}
-
-function enhanceExportWorkflowMoved(doc) {
-  if (doc.body.dataset.aegisEnhancedExportMoved === "true") return;
-  doc.body.dataset.aegisEnhancedExportMoved = "true";
-  injectStyles(doc);
-
-  const anchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(
-    doc,
-    anchor,
-    `${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion} grounds this surface. The export workflow has been retired as a standalone modal — export review is now embedded in the Detailed Agent View where it stays bounded to real Peer record state.`,
-  );
-
-  const detailButton = doc.querySelector("[data-export-route='detail']");
-  const monitorButton = doc.querySelector("[data-export-route='monitor']");
-
-  bindManagedClick(detailButton, () => navigateTo("/agent-workshop/detailed-agent-view-dataquad-node/"));
-  bindManagedClick(monitorButton, () => navigateTo("/agent-workshop/active-agents-monitor-agentic-workshop/"));
-}
-
 function enhanceGovernedRespawnArchive(doc) {
   if (doc.body.dataset.aegisEnhancedRespawnArchive === "true") return;
   doc.body.dataset.aegisEnhancedRespawnArchive = "true";
@@ -1729,98 +1153,186 @@ function enhanceGovernedRespawnArchive(doc) {
   hydrateLivePeerRuntime(doc, applyRuntime);
 }
 
-function enhanceArchiveRouteMerged(doc) {
-  if (doc.body.dataset.aegisEnhancedArchiveMerged === "true") return;
-  doc.body.dataset.aegisEnhancedArchiveMerged = "true";
+const CHAMBER_BUTTON_CLASS = "rounded border border-signal/45 bg-signal/10 px-3 py-2 text-xs font-semibold text-signal hover:bg-signal/15";
+
+function chamberWitnessHasResponse(witness) {
+  const text = [witness.perceptionTrace, witness.reflectionTrace, witness.clarifyingQuestion]
+    .some((value) => String(value || "").trim());
+  const anchor = witness.cyberPeerPerceptionAnchor && witness.cyberPeerPerceptionAnchor !== "unselected";
+  const posture = witness.selectedPosture && witness.selectedPosture !== "unselected";
+  return Boolean(text || anchor || posture);
+}
+
+// Adds "Save to record" beside a chamber's witness preview. The chamber page itself keeps
+// building the witness JSON; this reads that JSON and stores it on Adam-One's record.
+function enhanceBondChamber(doc, { chamberId, chamberLabel, source }) {
+  if (doc.body.dataset.aegisEnhancedBondChamber === "true") return;
+  const preview = doc.getElementById("witnessPreview");
+  if (!preview) return;
+  doc.body.dataset.aegisEnhancedBondChamber = "true";
   injectStyles(doc);
 
-  const anchor = doc.querySelector("main") || doc.body;
-  prependCoreBanner(
-    doc,
-    anchor,
-    `${CORE_ENGINE.name} ${CORE_ENGINE.displayVersion} grounds this archive entry point in the same live Peer ledger state as the primary governed archive. Archive review actions are available on the primary archive surface.`,
-  );
+  const row = doc.createElement("div");
+  row.className = "mt-3 flex flex-wrap items-center gap-3";
+  const button = doc.createElement("button");
+  button.type = "button";
+  button.className = CHAMBER_BUTTON_CLASS;
+  button.textContent = `Save to ${BETA_PEER_DISPLAY_NAME}'s record`;
+  const status = doc.createElement("p");
+  status.className = "text-xs leading-5 text-slate-400";
+  status.setAttribute("role", "status");
+  status.textContent = "Not saved. Saving stores this response as candidate evidence pending Steward review.";
+  row.append(button, status);
+  preview.insertAdjacentElement("afterend", row);
 
-  const archiveButton = doc.querySelector("[data-archive-merge-route='archive']");
-  const monitorButton = doc.querySelector("[data-archive-merge-route='monitor']");
-
-  bindManagedClick(archiveButton, () => navigateTo("/agent-workshop/sssp-respawn-archive-1/"));
-  bindManagedClick(monitorButton, () => navigateTo("/agent-workshop/active-agents-monitor-agentic-workshop/"));
-
-  // The Webflow template for this page does not carry the data-attribute elements
-  // present on the primary archive surface — inject a live status panel so that
-  // real Peer ledger state is visible here without duplicating the append action.
-  const statusPanel = doc.createElement("div");
-  statusPanel.className = "aegis-archive-merge-status";
-  statusPanel.innerHTML = [
-    `<div data-merge-status-connectivity></div>`,
-    `<div data-merge-status-mode></div>`,
-    `<div data-merge-status-summary></div>`,
-    `<div data-merge-status-events></div>`,
-  ].join("");
-  anchor.append(statusPanel);
-
-  const setStatus = (sel, val) => {
-    const node = statusPanel.querySelector(sel);
-    if (node) node.textContent = val;
-  };
-
-  const applyRuntime = (runtime) => {
-    const latestSummary =
-      runtime.peer?.temporalMemory?.latestSummary ||
-      runtime.advocate?.continuitySummary ||
-      "Awaiting reviewed continuity.";
-    setStatus("[data-merge-status-connectivity]", navigator.onLine ? "Online" : "Offline");
-    setStatus(
-      "[data-merge-status-mode]",
-      runtime.peer?.temporalMemory?.continuityMode ||
-        runtime.peer?.dataQuadBinding?.continuityStatus ||
-        "bootstrap-only",
-    );
-    setStatus("[data-merge-status-summary]", latestSummary);
-
-    const eventsEl = statusPanel.querySelector("[data-merge-status-events]");
-    if (eventsEl) {
-      const items = [
-        ...(runtime.events || [])
-          .slice(0, 4)
-          .map((entry) => `${entry.eventType} · ${entry.summary}`),
-        ...(runtime.artifacts || [])
-          .slice(0, 2)
-          .map((entry) => `${entry.title || entry.type} · ${entry.reviewState || "pending"}`),
-      ].slice(0, 6);
-      eventsEl.innerHTML = items.length
-        ? items.map((entry) => `<div>${entry}</div>`).join("")
-        : "<div>No archive records yet.</div>";
+  let lastSaved = "";
+  bindManagedClick(button, withButtonLoading(button, "Saving…", async () => {
+    let witness;
+    try {
+      witness = JSON.parse(preview.textContent || "");
+    } catch {
+      status.textContent = "The witness record could not be read. Nothing was saved.";
+      return;
     }
+    if (!chamberWitnessHasResponse(witness)) {
+      status.textContent = "Nothing to save yet: make a selection or write a trace first.";
+      return;
+    }
+    // Compare without the observation timestamp, which changes on every render.
+    const comparable = JSON.stringify({ ...witness, timeSpan: undefined });
+    if (comparable === lastSaved) {
+      status.textContent = "This response is already saved. Change it to save a new record.";
+      return;
+    }
+    try {
+      const { recordBetaPeerChamberWitness } = await loadWorkshopOperatorControls();
+      const result = await recordBetaPeerChamberWitness({ chamberId, chamberLabel, source, witness });
+      lastSaved = comparable;
+      status.textContent = `Saved as candidate evidence pending Steward review (event ${result.eventId}).`;
+      showToast(doc, `${chamberLabel} response saved to ${BETA_PEER_DISPLAY_NAME}'s record.`);
+    } catch (error) {
+      console.error("[agent-workshop] chamber witness save failed", error);
+      status.textContent = "Save failed. Nothing was written to the record.";
+      showToast(doc, "Save failed. Nothing was written to the record.");
+    }
+  }));
+}
+
+function enhanceWhichoneChamber(doc) {
+  enhanceBondChamber(doc, {
+    chamberId: "whichone-emotion-nuance-training",
+    chamberLabel: "WHICHONE Bond Chamber",
+    source: "academy_whichone_bond_chamber",
+  });
+}
+
+function enhanceSeed001Chamber(doc) {
+  enhanceBondChamber(doc, {
+    chamberId: "holochamber-seed-001",
+    chamberLabel: "Ambiguity & Clarification",
+    source: "academy_holochamber_seed_001",
+  });
+}
+
+function formatWitnessTime(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? "time not recorded" : date.toLocaleString();
+}
+
+// Bond Witness Review lists the chamber responses actually saved on Adam-One's record.
+function enhanceBondWitnessReview(doc) {
+  if (doc.body.dataset.aegisEnhancedBondReview === "true") return;
+  const table = doc.getElementById("recordsTable");
+  const gates = doc.getElementById("gateList");
+  const preview = doc.getElementById("witnessPreview");
+  if (!table || !gates || !preview) return;
+  doc.body.dataset.aegisEnhancedBondReview = "true";
+  injectStyles(doc);
+
+  const message = (text) => {
+    table.replaceChildren();
+    const row = doc.createElement("tr");
+    const cell = doc.createElement("td");
+    cell.colSpan = 4;
+    cell.className = "px-4 py-4 text-slate-400";
+    cell.textContent = text;
+    row.append(cell);
+    table.append(row);
   };
 
-  setStatus("[data-merge-status-connectivity]", navigator.onLine ? "Online" : "Offline");
-  setStatus("[data-merge-status-summary]", "Awaiting persisted runtime hydration.");
-  hydrateLivePeerRuntime(doc, applyRuntime);
+  const showRecord = (entry) => {
+    const witness = entry?.payload?.witness || {};
+    const checks = [
+      ["Bounded environment stated", Boolean(witness.chamberMode || witness.academyBoundary)],
+      ["Response trace present", chamberWitnessHasResponse(witness)],
+      ["Origin boundary stated", Boolean(witness.dataQuadWitness?.originBoundary)],
+      ["Steward review still pending", witness.stewardReview === "pending"],
+    ];
+    gates.replaceChildren(...checks.map(([label, met]) => {
+      const line = doc.createElement("p");
+      line.className = "flex items-center gap-2";
+      line.textContent = `${met ? "Yes" : "No"} — ${label}`;
+      return line;
+    }));
+    preview.textContent = JSON.stringify(witness, null, 2);
+  };
+
+  gates.replaceChildren();
+  preview.textContent = "";
+  message("Loading saved chamber records…");
+
+  fetchBetaPeerChamberWitnesses().then((entries) => {
+    if (!entries.length) {
+      message("No chamber responses have been saved yet.");
+      preview.textContent = "Saved witness records will appear here.";
+      return;
+    }
+    table.replaceChildren(...entries.map((entry, index) => {
+      const witness = entry.payload?.witness || {};
+      const row = doc.createElement("tr");
+      row.className = "cursor-pointer bg-slate-950/50 hover:bg-slate-900";
+      row.tabIndex = 0;
+      const cells = [
+        [entry.payload?.chamberLabel || entry.payload?.chamberId || "Chamber", "px-4 py-4 font-semibold text-white"],
+        [formatWitnessTime(entry.timestamp), "px-4 py-4 text-slate-300"],
+        ["Pending Steward Review", "px-4 py-4 text-amber-300"],
+        [witness.authenticity || witness.academyBoundary?.authenticity || "not stated", "px-4 py-4 text-moss"],
+      ];
+      row.append(...cells.map(([text, className]) => {
+        const cell = doc.createElement("td");
+        cell.className = className;
+        cell.textContent = text;
+        return cell;
+      }));
+      const open = () => showRecord(entry);
+      row.addEventListener("click", open);
+      row.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          open();
+        }
+      });
+      if (index === 0) open();
+      return row;
+    }));
+  }).catch((error) => {
+    console.warn("[agent-workshop] chamber witness load failed", error);
+    message("Saved chamber records could not be loaded.");
+  });
 }
 
 const pageEnhancers = {
+  "whichone-emotion-nuance-training": enhanceWhichoneChamber,
+  "holochamber-seed-001": enhanceSeed001Chamber,
+  "holochamber-evidence-review": enhanceBondWitnessReview,
   "active-agents-monitor-agentic-workshop": enhanceActiveAgentsMonitor,
   "agentic-workshop-entrance": enhanceWorkshopEntrance,
   "agentic-workshop-main-console": enhanceMainConsole,
   "aegis-project-tree-index": enhanceWorkshopMap,
   "agent-communication-protocol": enhanceCommunicationProtocol,
   "agent-mesh-visualizer": enhanceMeshVisualizer,
-  "ai-audit-analysis-recursive-training": enhanceAiAuditAnalysis,
-  "anomaly-analysis-detail": enhanceAnomalyAnalysisDetail,
-  "bulk-export-progress-modal": enhanceExportWorkflowMoved,
-  "recursive-logic-debugger-agentic-workshop": enhanceRecursiveLogicDebugger,
-  "recursive-training-progress-report": enhanceRecursiveTrainingProgress,
-  "global-anomaly-heatmap": enhanceGlobalAnomalyHeatmap,
   "detailed-agent-view-dataquad-node": enhanceDetailedAgentView,
   "sssp-respawn-archive-1": enhanceGovernedRespawnArchive,
-  "sssp-respawn-archive-2": enhanceArchiveRouteMerged,
-  "create-new-agent-flow": enhanceCreateNewAgentFlow,
-  "create-new-agent-identity-configuration": enhanceCreateIdentity,
-  "create-new-agent-logic-intelligence": enhanceCreateLogic,
-  "create-new-agent-memory-rag": enhanceCreateMemory,
-  "create-new-agent-dataquad-memory-configuration": enhanceCreateDataQuad,
   "model-deployment-flow": enhanceModelDeploymentFlow,
 };
 

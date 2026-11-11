@@ -13,11 +13,7 @@
         "buttonMappings": {
           "aegisalign-landing-page": [
             { "text": "Login", "target": "login-aegisalign" },
-            { "text": "Get Started", "target": "signup-aegisalign" },
-            { "text": "Deploy Now", "target": "aegisalign-pricing-plans" },
             { "text": "Watch Demo", "target": "aegis-protocol-dashboard" },
-            { "text": "Get Started Free", "target": "signup-aegisalign" },
-            { "text": "Talk to Sales", "target": "aegisalign-pricing-plans" },
             { "text": "AEGIS Protocol", "target": "aegis-protocol-features" },
             { "text": "Documentation", "target": "aegis-protocol-documentation-portal" }
           ],
@@ -31,8 +27,7 @@
             { "text": "Authentication Flow", "target": "login-aegisalign" },
             { "text": "Webhook Setup", "target": "aegis-protocol-dashboard" },
             { "text": "Encryption Standards", "target": "aegis-protocol-features" },
-            { "text": "Release Notes", "target": "aegis-protocol-features" },
-            { "text": "Book a Session", "target": "aegisalign-pricing-plans" }
+            { "text": "Release Notes", "target": "aegis-protocol-features" }
           ],
           "aegis-protocol-dashboard": [
             { "text": "Dashboard", "target": "aegis-protocol-dashboard" },
@@ -52,23 +47,14 @@
         "label": "Access & Identity",
         "pages": [
           { "slug": "login-aegisalign", "isParent": true },
-          { "slug": "signup-aegisalign", "parent": "login-aegisalign" },
           { "slug": "multi-factor-authentication", "parent": "login-aegisalign" },
           { "slug": "login-success-transition", "parent": "login-aegisalign" }
         ],
         "buttonMappings": {
           "login-aegisalign": [
             { "text": "Login to Protocol", "target": "login-success-transition" },
-            { "text": "Create an account", "target": "signup-aegisalign" },
             { "text": "Forgot Password?", "target": "aegisalign-settings" },
             { "text": "Support", "target": "aegis-protocol-documentation-portal" }
-          ],
-          "signup-aegisalign": [
-            { "text": "Create Account", "target": "multi-factor-authentication" },
-            { "text": "Login", "target": "login-aegisalign" },
-            { "text": "Documentation", "target": "aegis-protocol-documentation-portal" },
-            { "text": "Support", "target": "aegis-protocol-documentation-portal" },
-            { "text": "System Status", "target": "aegis-protocol-dashboard" }
           ],
           "multi-factor-authentication": [
             { "text": "Verify Identity", "target": "login-success-transition" },
@@ -87,24 +73,12 @@
         "label": "Account Surfaces",
         "pages": [
           { "slug": "aegis-peer-profile", "isParent": true },
-          { "slug": "aegisalign-pricing-plans", "parent": "aegis-peer-profile" },
           { "slug": "aegisalign-settings", "parent": "aegis-peer-profile" }
         ],
         "buttonMappings": {
           "aegis-peer-profile": [
             { "text": "Open Settings", "target": "aegisalign-settings" },
-            { "text": "Subscriber Plans", "target": "aegisalign-pricing-plans" },
             { "text": "Login", "target": "login-aegisalign" },
-            { "text": "Documentation", "target": "aegis-protocol-documentation-portal" }
-          ],
-          "aegisalign-pricing-plans": [
-            { "text": "Sign Up", "target": "signup-aegisalign" },
-            { "text": "Login", "target": "login-aegisalign" },
-            { "text": "Start Free Trial", "target": "signup-aegisalign" },
-            { "text": "Get Started", "target": "signup-aegisalign" },
-            { "text": "Contact Sales", "target": "aegis-protocol-documentation-portal" },
-            { "text": "Get Started Now", "target": "signup-aegisalign" },
-            { "text": "Schedule Demo", "target": "aegis-protocol-dashboard" },
             { "text": "Documentation", "target": "aegis-protocol-documentation-portal" }
           ]
         }
@@ -123,75 +97,91 @@
       {
         "label": "Access",
         "pages": [
-          { "slug": "agentic-workshop-entrance", "isParent": true, "navLabel": "All Minds Academy Entrance" },
-          { "slug": "agentic-workshop-main-console", "isParent": true, "navLabel": "Academy Main Console" }
+          {
+            "slug": "agentic-workshop-entrance",
+            "isParent": true,
+            "navLabel": "All Minds Academy Entrance"
+          },
+          {
+            "slug": "agentic-workshop-main-console",
+            "isParent": true,
+            "navLabel": "Academy Main Console"
+          }
         ]
       },
       {
         "label": "Squad Bonding Chambers",
         "pages": [
-          { "slug": "aegis-holochamber-academy", "isParent": true, "navLabel": "All Minds Academy" },
-          { "slug": "whichone-emotion-nuance-training", "parent": "aegis-holochamber-academy", "navLabel": "WHICHONE Bond Chamber" },
-          { "slug": "holochamber-seed-001", "parent": "aegis-holochamber-academy", "navLabel": "Ambiguity & Clarification" },
-          { "slug": "holochamber-evidence-review", "parent": "aegis-holochamber-academy", "navLabel": "Bond Witness Review" }
+          {
+            "slug": "aegis-holochamber-academy",
+            "isParent": true,
+            "navLabel": "All Minds Academy"
+          },
+          {
+            "slug": "whichone-emotion-nuance-training",
+            "parent": "aegis-holochamber-academy",
+            "navLabel": "WHICHONE Bond Chamber"
+          },
+          {
+            "slug": "holochamber-seed-001",
+            "parent": "aegis-holochamber-academy",
+            "navLabel": "Ambiguity & Clarification"
+          },
+          {
+            "slug": "holochamber-evidence-review",
+            "parent": "aegis-holochamber-academy",
+            "navLabel": "Bond Witness Review"
+          }
         ]
       },
       {
         "label": "Witness & Review Lane",
         "pages": [
-          { "slug": "active-agents-monitor-agentic-workshop", "isParent": true, "navLabel": "Active CyberPeers Monitor" },
-          { "slug": "detailed-agent-view-dataquad-node", "parent": "active-agents-monitor-agentic-workshop", "navLabel": "Detailed CyberPeer View" },
-          { "slug": "aegis-project-tree-index", "parent": "active-agents-monitor-agentic-workshop", "navLabel": "Academy Map" }
+          {
+            "slug": "active-agents-monitor-agentic-workshop",
+            "isParent": true,
+            "navLabel": "Active CyberPeers Monitor"
+          },
+          {
+            "slug": "detailed-agent-view-dataquad-node",
+            "parent": "active-agents-monitor-agentic-workshop",
+            "navLabel": "Detailed CyberPeer View"
+          },
+          {
+            "slug": "aegis-project-tree-index",
+            "parent": "active-agents-monitor-agentic-workshop",
+            "navLabel": "Academy Map"
+          }
         ]
-      },
-      {
-        "label": "Squad Formation",
-        "pages": [
-          { "slug": "create-new-agent-flow", "isParent": true, "navLabel": "Form New Squad" },
-          { "slug": "create-new-agent-identity-configuration", "parent": "create-new-agent-flow", "navLabel": "Identity Configuration" },
-          { "slug": "create-new-agent-logic-intelligence", "parent": "create-new-agent-flow", "navLabel": "Logic & Intelligence" },
-          { "slug": "create-new-agent-memory-rag", "parent": "create-new-agent-flow", "navLabel": "Memory & RAG" },
-          { "slug": "create-new-agent-dataquad-memory-configuration", "parent": "create-new-agent-flow", "navLabel": "DataQuad Memory" },
-          { "slug": "dataquad-agent-deployment", "parent": "create-new-agent-flow", "navLabel": "DataQuad Deployment" },
-          { "slug": "model-deployment-flow", "parent": "create-new-agent-flow", "navLabel": "Substrate Deployment" }
-        ],
-        "buttonMappings": {
-          "create-new-agent-flow": [
-            { "text": "Next", "target": "create-new-agent-identity-configuration" },
-            { "text": "Continue", "target": "create-new-agent-identity-configuration" }
-          ],
-          "create-new-agent-identity-configuration": [
-            { "text": "Next", "target": "create-new-agent-logic-intelligence" }
-          ],
-          "create-new-agent-logic-intelligence": [
-            { "text": "Next", "target": "create-new-agent-memory-rag" }
-          ],
-          "create-new-agent-memory-rag": [
-            { "text": "Next", "target": "create-new-agent-dataquad-memory-configuration" }
-          ]
-        }
       },
       {
         "label": "Orientation & Protocols",
         "pages": [
-          { "slug": "agent-communication-protocol", "isParent": true, "navLabel": "CyberPeer Communication Protocol" },
-          { "slug": "agent-mesh-visualizer", "parent": "agent-communication-protocol", "navLabel": "CyberPeer Mesh Visualizer" }
-        ]
-      },
-      {
-        "label": "Monitoring & Analysis",
-        "pages": [
-          { "slug": "ai-audit-analysis-recursive-training", "parent": "active-agents-monitor-agentic-workshop", "navLabel": "SI Audit Analysis" },
-          { "slug": "anomaly-analysis-detail", "parent": "active-agents-monitor-agentic-workshop", "navLabel": "Anomaly Analysis Detail" },
-          { "slug": "global-anomaly-heatmap", "parent": "active-agents-monitor-agentic-workshop", "navLabel": "Global Anomaly Heatmap" },
-          { "slug": "recursive-logic-debugger-agentic-workshop", "parent": "active-agents-monitor-agentic-workshop", "navLabel": "Recursive Logic Debugger" },
-          { "slug": "recursive-training-progress-report", "parent": "active-agents-monitor-agentic-workshop", "navLabel": "Recursive Progress Report" }
+          {
+            "slug": "agent-communication-protocol",
+            "isParent": true,
+            "navLabel": "CyberPeer Communication Protocol"
+          },
+          {
+            "slug": "agent-mesh-visualizer",
+            "parent": "agent-communication-protocol",
+            "navLabel": "CyberPeer Mesh Visualizer"
+          }
         ]
       },
       {
         "label": "Deployments & Records",
         "pages": [
-          { "slug": "sssp-respawn-archive-1", "parent": "detailed-agent-view-dataquad-node", "navLabel": "Governed Respawn Archive" }
+          {
+            "slug": "model-deployment-flow",
+            "parent": "detailed-agent-view-dataquad-node",
+            "navLabel": "Substrate Deployment"
+          },
+          {
+            "slug": "sssp-respawn-archive-1",
+            "parent": "detailed-agent-view-dataquad-node",
+            "navLabel": "Governed Respawn Archive"
+          }
         ]
       }
     ]
@@ -286,34 +276,6 @@
           { "slug": "colab-creation-page-1", "isParent": true, "navLabel": "Collab Hub Alpha" },
           { "slug": "colab-creation-page-2", "parent": "colab-creation-page-1", "navLabel": "Collab Hub Beta" },
           { "slug": "network-topology-visualizer", "parent": "colab-creation-page-1" }
-        ]
-      }
-    ]
-  },
-  {
-    "domain": "aegis-application-lab",
-    "sections": [
-      {
-        "label": "Core Systems",
-        "pages": [
-          { "slug": "aegis-implementation-apps", "isParent": true },
-          { "slug": "aegis-core-shield-features", "parent": "aegis-implementation-apps" },
-          { "slug": "aegis-interceptor-features-v2", "parent": "aegis-implementation-apps" }
-        ]
-      },
-      {
-        "label": "Reflective Interfaces",
-        "pages": [
-          { "slug": "aegis-reflective-prism-features", "isParent": true },
-          { "slug": "aegis-reflective-widget-features", "parent": "aegis-reflective-prism-features" }
-        ]
-      },
-      {
-        "label": "Governance & Collaboration",
-        "pages": [
-          { "slug": "aegis-arbitor-features-1", "isParent": true, "navLabel": "Arbitor Overview" },
-          { "slug": "aegis-arbitor-features-2", "parent": "aegis-arbitor-features-1", "navLabel": "Arbitor Consensus" },
-          { "slug": "aegis-llm-colab-and-agentic-workshop", "parent": "aegis-arbitor-features-1", "navLabel": "LLM Colab Workshop" }
         ]
       }
     ]

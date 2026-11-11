@@ -3,24 +3,6 @@
 /custodian-secure /custodian-ui/secure/ 302
 
 # BEGIN GENERATED STITCH REDIRECTS
-/aegis-application-lab /aegis-application-lab/ 301
-/aegis-application-lab/aegis-arbitor-features-1 /aegis-application-lab/aegis-arbitor-features-1/ 301
-/aegis-application-lab/aegis-arbitor-features-1/index.html /aegis-application-lab/aegis-arbitor-features-1/ 301
-/aegis-application-lab/aegis-arbitor-features-2 /aegis-application-lab/aegis-arbitor-features-2/ 301
-/aegis-application-lab/aegis-arbitor-features-2/index.html /aegis-application-lab/aegis-arbitor-features-2/ 301
-/aegis-application-lab/aegis-core-shield-features /aegis-application-lab/aegis-core-shield-features/ 301
-/aegis-application-lab/aegis-core-shield-features/index.html /aegis-application-lab/aegis-core-shield-features/ 301
-/aegis-application-lab/aegis-implementation-apps /aegis-application-lab/aegis-implementation-apps/ 301
-/aegis-application-lab/aegis-implementation-apps/index.html /aegis-application-lab/aegis-implementation-apps/ 301
-/aegis-application-lab/aegis-interceptor-features-v2 /aegis-application-lab/aegis-interceptor-features-v2/ 301
-/aegis-application-lab/aegis-interceptor-features-v2/index.html /aegis-application-lab/aegis-interceptor-features-v2/ 301
-/aegis-application-lab/aegis-llm-colab-and-agentic-workshop /aegis-application-lab/aegis-llm-colab-and-agentic-workshop/ 301
-/aegis-application-lab/aegis-llm-colab-and-agentic-workshop/index.html /aegis-application-lab/aegis-llm-colab-and-agentic-workshop/ 301
-/aegis-application-lab/aegis-reflective-prism-features /aegis-application-lab/aegis-reflective-prism-features/ 301
-/aegis-application-lab/aegis-reflective-prism-features/index.html /aegis-application-lab/aegis-reflective-prism-features/ 301
-/aegis-application-lab/aegis-reflective-widget-features /aegis-application-lab/aegis-reflective-widget-features/ 301
-/aegis-application-lab/aegis-reflective-widget-features/index.html /aegis-application-lab/aegis-reflective-widget-features/ 301
-/aegis-application-lab/index.html /aegis-application-lab/ 301
 /agent-workshop /agent-workshop/ 301
 /agent-workshop/active-agents-monitor-agentic-workshop /agent-workshop/active-agents-monitor-agentic-workshop/ 301
 /agent-workshop/active-agents-monitor-agentic-workshop/index.html /agent-workshop/active-agents-monitor-agentic-workshop/ 301
@@ -36,28 +18,8 @@
 /agent-workshop/agentic-workshop-entrance/index.html /agent-workshop/agentic-workshop-entrance/ 301
 /agent-workshop/agentic-workshop-main-console /agent-workshop/agentic-workshop-main-console/ 301
 /agent-workshop/agentic-workshop-main-console/index.html /agent-workshop/agentic-workshop-main-console/ 301
-/agent-workshop/ai-audit-analysis-recursive-training /agent-workshop/ai-audit-analysis-recursive-training/ 301
-/agent-workshop/ai-audit-analysis-recursive-training/index.html /agent-workshop/ai-audit-analysis-recursive-training/ 301
-/agent-workshop/anomaly-analysis-detail /agent-workshop/anomaly-analysis-detail/ 301
-/agent-workshop/anomaly-analysis-detail/index.html /agent-workshop/anomaly-analysis-detail/ 301
-/agent-workshop/bulk-export-progress-modal /agent-workshop/bulk-export-progress-modal/ 301
-/agent-workshop/bulk-export-progress-modal/index.html /agent-workshop/bulk-export-progress-modal/ 301
-/agent-workshop/create-new-agent-dataquad-memory-configuration /agent-workshop/create-new-agent-dataquad-memory-configuration/ 301
-/agent-workshop/create-new-agent-dataquad-memory-configuration/index.html /agent-workshop/create-new-agent-dataquad-memory-configuration/ 301
-/agent-workshop/create-new-agent-flow /agent-workshop/create-new-agent-flow/ 301
-/agent-workshop/create-new-agent-flow/index.html /agent-workshop/create-new-agent-flow/ 301
-/agent-workshop/create-new-agent-identity-configuration /agent-workshop/create-new-agent-identity-configuration/ 301
-/agent-workshop/create-new-agent-identity-configuration/index.html /agent-workshop/create-new-agent-identity-configuration/ 301
-/agent-workshop/create-new-agent-logic-intelligence /agent-workshop/create-new-agent-logic-intelligence/ 301
-/agent-workshop/create-new-agent-logic-intelligence/index.html /agent-workshop/create-new-agent-logic-intelligence/ 301
-/agent-workshop/create-new-agent-memory-rag /agent-workshop/create-new-agent-memory-rag/ 301
-/agent-workshop/create-new-agent-memory-rag/index.html /agent-workshop/create-new-agent-memory-rag/ 301
-/agent-workshop/dataquad-agent-deployment /agent-workshop/dataquad-agent-deployment/ 301
-/agent-workshop/dataquad-agent-deployment/index.html /agent-workshop/dataquad-agent-deployment/ 301
 /agent-workshop/detailed-agent-view-dataquad-node /agent-workshop/detailed-agent-view-dataquad-node/ 301
 /agent-workshop/detailed-agent-view-dataquad-node/index.html /agent-workshop/detailed-agent-view-dataquad-node/ 301
-/agent-workshop/global-anomaly-heatmap /agent-workshop/global-anomaly-heatmap/ 301
-/agent-workshop/global-anomaly-heatmap/index.html /agent-workshop/global-anomaly-heatmap/ 301
 /agent-workshop/holochamber-evidence-review /agent-workshop/holochamber-evidence-review/ 301
 /agent-workshop/holochamber-evidence-review/index.html /agent-workshop/holochamber-evidence-review/ 301
 /agent-workshop/holochamber-seed-001 /agent-workshop/holochamber-seed-001/ 301
@@ -65,14 +27,8 @@
 /agent-workshop/index.html /agent-workshop/ 301
 /agent-workshop/model-deployment-flow /agent-workshop/model-deployment-flow/ 301
 /agent-workshop/model-deployment-flow/index.html /agent-workshop/model-deployment-flow/ 301
-/agent-workshop/recursive-logic-debugger-agentic-workshop /agent-workshop/recursive-logic-debugger-agentic-workshop/ 301
-/agent-workshop/recursive-logic-debugger-agentic-workshop/index.html /agent-workshop/recursive-logic-debugger-agentic-workshop/ 301
-/agent-workshop/recursive-training-progress-report /agent-workshop/recursive-training-progress-report/ 301
-/agent-workshop/recursive-training-progress-report/index.html /agent-workshop/recursive-training-progress-report/ 301
 /agent-workshop/sssp-respawn-archive-1 /agent-workshop/sssp-respawn-archive-1/ 301
 /agent-workshop/sssp-respawn-archive-1/index.html /agent-workshop/sssp-respawn-archive-1/ 301
-/agent-workshop/sssp-respawn-archive-2 /agent-workshop/sssp-respawn-archive-2/ 301
-/agent-workshop/sssp-respawn-archive-2/index.html /agent-workshop/sssp-respawn-archive-2/ 301
 /agent-workshop/whichone-emotion-nuance-training /agent-workshop/whichone-emotion-nuance-training/ 301
 /agent-workshop/whichone-emotion-nuance-training/index.html /agent-workshop/whichone-emotion-nuance-training/ 301
 /custodian-ui /custodian-ui/ 301
@@ -167,8 +123,6 @@
 /nexus/aegis-protocol-features/index.html /nexus/aegis-protocol-features/ 301
 /nexus/aegisalign-landing-page /nexus/aegisalign-landing-page/ 301
 /nexus/aegisalign-landing-page/index.html /nexus/aegisalign-landing-page/ 301
-/nexus/aegisalign-pricing-plans /nexus/aegisalign-pricing-plans/ 301
-/nexus/aegisalign-pricing-plans/index.html /nexus/aegisalign-pricing-plans/ 301
 /nexus/aegisalign-settings /nexus/aegisalign-settings/ 301
 /nexus/aegisalign-settings/index.html /nexus/aegisalign-settings/ 301
 /nexus/index.html /nexus/ 301
@@ -178,6 +132,4 @@
 /nexus/login-success-transition/index.html /nexus/login-success-transition/ 301
 /nexus/multi-factor-authentication /nexus/multi-factor-authentication/ 301
 /nexus/multi-factor-authentication/index.html /nexus/multi-factor-authentication/ 301
-/nexus/signup-aegisalign /nexus/signup-aegisalign/ 301
-/nexus/signup-aegisalign/index.html /nexus/signup-aegisalign/ 301
 # END GENERATED STITCH REDIRECTS
